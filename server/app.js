@@ -42,7 +42,9 @@ function errors(err, req, res) {
 
 io.on("connection", clientSocket => {
   // New device connected
-  ClientManager.registerNewClient();
+  ClientManager.registerNewClient(clientSocket);
+
+  clientSocket.on("user.edit", ClientManager.handleEditClient);
 });
 
 module.exports = app;
