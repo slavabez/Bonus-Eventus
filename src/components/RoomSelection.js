@@ -45,9 +45,14 @@ const RoomList = styled.ul`
   height: 88%;
 
   li {
-    padding: 0.25rem;
     font-size: 1.8rem;
     color: #47cead;
+    border-radius: 2rem;
+    padding: 0.25rem 0.25rem 0.25rem 1rem;
+  }
+
+  li:hover {
+    background-color: #e7e7e7;
   }
 `;
 
