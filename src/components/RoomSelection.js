@@ -63,6 +63,7 @@ const CreateRoomBackground = styled.div`
 `;
 
 const CreateRoomDialog = styled.form`
+  font-family: "Dosis", sans-serif;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -70,6 +71,7 @@ const CreateRoomDialog = styled.form`
 
   button {
     background-color: #47cead;
+    font-family: "Dosis", sans-serif;
     padding: 2px 50px;
     border-radius: 2rem;
     color: white;
@@ -92,6 +94,7 @@ const FormRow = styled.div`
   }
 
   input {
+    font-family: "Dosis", sans-serif;
     width: 70%;
     border: none;
     background-color: #e7e7e7;
