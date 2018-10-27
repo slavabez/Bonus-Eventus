@@ -1,16 +1,26 @@
-import React, { Component } from 'react';
+import React, { Component } from "react";
+import axios from "axios";
 import Register from "./components/Register";
 import socket from "./socket";
-import logo from './logo.svg';
-import './App.css';
+import logo from "./logo.svg";
+import "./App.css";
 
 class App extends Component {
-
-  constructor(props){
+  constructor(props) {
     super(props);
     this.state = {
       server: socket()
     };
+  }
+
+  async componentDidMount() {
+    const response = await axios.post("/users", {
+      name: "lol",
+      avatar: "avatar.lol",
+      id: "i7h0o6zjnr1vd1u",
+      color: "blaaaaaaaaaaack"
+    });
+    console.log(response);
   }
 
   render() {

@@ -7,16 +7,5 @@ export default function() {
     console.error(err);
   });
 
-  function register(data, cb) {
-    socket.emit("user.register", data, cb);
-  }
-
-  function editUser(data, cb) {
-    socket.emit("user.edit", data, cb);
-  }
-
-  return {
-    register,
-    editUser
-  };
+  return {};
 }

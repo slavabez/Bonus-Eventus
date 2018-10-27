@@ -14,24 +14,19 @@ class ClientManager {
     this.allUsers = new Map();
   }
 
-  registerNewClient(clientSocket){
+  registerNewClient(){
     const user = new User();
     this.allUsers.set(user.id, user);
-    clientSocket.emit("user.registered", user);
+    return user;
   }
 
-  handleEditClient(data, cb){
+  editClientUserData(data){
     let user = this.allUsers.get(data.id);
     if (data.name) user.name = data.name;
     if (data.avatar) user.avatar = data.avatar;
     if (data.color) user.color = data.color;
     this.allUsers.set(data.id, user);
-
-    return cb(null, user);
-  }
-
-  editClientUserData(socket, data){
-
+    return user;
   }
 }
 

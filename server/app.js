@@ -4,18 +4,27 @@ const app = express();
 const server = require("http").Server(app);
 const io = require("socket.io")(server);
 
-
 const ClientManager = require("./ClientManager");
 const RoomManager = require("./RoomManager");
 const { handleRegister } = require("./handlers/user");
 
 // Initialize an express app with some security defaults
-app.use(https).use(helmet());
+app.use(https).use(helmet()).use(express.json());
 
-
+app.post("/users", (req, res) => {
+  let user;
+  if (!req.body.id){
+    // ID passed - edit
+    user = ClientManager.registerNewClient();
+  } else {
+    // No id, create new
+    user = ClientManager.editClientUserData(req.body);
+  }
+  res.send(user);
+});
 
 // Serve static assets built by create-react-app
-app.use(express.static("build"));
+app.use(express.static("./build"));
 
 // If no explicit matches were found, serve index.html
 app.get("*", function(req, res) {
@@ -47,10 +56,8 @@ function errors(err, req, res) {
 
 io.on("connection", clientSocket => {
   // New device connected
-  ClientManager.registerNewClient(clientSocket);
-  console.log("New user connected", ClientManager);
+  console.log("New user connected");
 
-  clientSocket.on("user.edit", ClientManager.handleEditClient);
 });
 
 module.exports = server;
