@@ -1,13 +1,18 @@
 const express = require("express");
 const helmet = require("helmet");
 const app = express();
-const io = require("socket.io")(app);
+const server = require("http").Server(app);
+const io = require("socket.io")(server);
+
+
 const ClientManager = require("./ClientManager");
-const RoomManager = new require("./RoomManager")();
+const RoomManager = require("./RoomManager");
 const { handleRegister } = require("./handlers/user");
 
 // Initialize an express app with some security defaults
 app.use(https).use(helmet());
+
+
 
 // Serve static assets built by create-react-app
 app.use(express.static("build"));
@@ -43,8 +48,9 @@ function errors(err, req, res) {
 io.on("connection", clientSocket => {
   // New device connected
   ClientManager.registerNewClient(clientSocket);
+  console.log("New user connected", ClientManager);
 
   clientSocket.on("user.edit", ClientManager.handleEditClient);
 });
 
-module.exports = app;
+module.exports = server;
