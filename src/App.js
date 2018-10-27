@@ -6,6 +6,7 @@ import RoomAdd from "./components/RoomAdd";
 import RollInput from "./components/RollInput";
 import Status from "./components/Status";
 import Register from "./components/Register";
+import ErrorNotice from "./components/ErrorNotice";
 
 class App extends Component {
 
@@ -16,6 +17,7 @@ class App extends Component {
           <img src={logo} className="App-logo" alt="logo" />
           <h1 className="App-title">Welcome to React</h1>
         </header>
+        <ErrorNotice/>
         <Status/>
         <Register/>
         <RoomAdd/>

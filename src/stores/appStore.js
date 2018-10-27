@@ -63,7 +63,8 @@ appStore.socket.on("connect", () => {
 });
 
 appStore.socket.on("register.restore.failed", () => {
-
+  // Tried restoring user - failed, likely cause server forgot the player (rebooted)
+  appStore.error = "Error loading saved player, please create a new player";
 });
 
 export default appStore;

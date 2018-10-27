@@ -48,6 +48,7 @@ function errors(err, req, res) {
 
 io.on("connection", clientSocket => {
   // New device connected
+  console.log("New user connected", clientSocket.id);
 
   // Registration stuff
   clientSocket.on("register.new", props => {
@@ -55,7 +56,6 @@ io.on("connection", clientSocket => {
     clientSocket.emit("register.success", user);
     console.log(`Registered a new user ${user.name} with gen ID ${user.id} and socket ID ${user.socketId}`);
   });
-
   clientSocket.on("register.restore", id => {
     // Try to find user with the ID
     const user = ClientManager.findClientById(id);
@@ -66,7 +66,7 @@ io.on("connection", clientSocket => {
     }
   });
 
-  console.log("New user connected", clientSocket.id);
+  // Rooms, joining and leaving
   clientSocket.on("room.create", async data => {
     try {
       const room = await RoomManager.createNewRoom(data);
@@ -80,7 +80,6 @@ io.on("connection", clientSocket => {
   clientSocket.on("room.listAll", () => {
     clientSocket.emit("room.allRooms", RoomManager.getRooms());
   });
-
   clientSocket.on("room.join", roomName => {
     // Check such room is created
     if (RoomManager.rooms.has(roomName)) {
@@ -89,7 +88,6 @@ io.on("connection", clientSocket => {
       console.log(`User ${clientSocket.id} joined ${roomName}`);
     }
   });
-
   clientSocket.on("room.leave", roomName => {
     // Back to
     clientSocket.leave(roomName);
@@ -97,6 +95,7 @@ io.on("connection", clientSocket => {
     console.log(`User ${clientSocket.id} left ${roomName}`);
   });
 
+  // Rolling the dice
   clientSocket.on("roll", message => {
     console.log("Message received", message);
     console.log("From user in groups", clientSocket.rooms);
