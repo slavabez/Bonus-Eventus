@@ -1,7 +1,7 @@
 class Room {
   constructor(name) {
     this.name = name;
-    this.users = [];
+    this.users = new Map();
     this.history = [];
     this.createdAt = new Date();
   }
@@ -13,7 +13,6 @@ class RoomManager {
   }
 
   createNewRoom(name) {
-    console.log(this.rooms.has(name));
     return new Promise((resolve, reject) => {
       if (this.rooms.has(name)) reject("Room with such name already exists");
       const room = new Room(name);
@@ -26,13 +25,27 @@ class RoomManager {
     return Array.from(this.rooms.values());
   }
 
+  addUserToRoom(user, roomName) {
+    const room = this.rooms.get(roomName);
+    room.users.set(user.id, user);
+  }
+
+  removeUserFromRoom(user) {
+    this.rooms.forEach(r => {
+      if (r.has(user.id)) r.delete(user.id);
+    });
+  }
+
   deleteOldRooms() {
     let count = 0;
     for (const key of this.rooms.keys()) {
       // First, check if there are any messages
       if (this.rooms.get(key).history.length < 1) {
         // no messages, if old - delete
-        if (this.rooms.get(key).createdAt.getTime() + 1000 * 60 < new Date().getTime()) {
+        if (
+          this.rooms.get(key).createdAt.getTime() + 1000 * 60 <
+          new Date().getTime()
+        ) {
           count++;
           this.rooms.delete(key);
         }
@@ -41,12 +54,15 @@ class RoomManager {
         let isOld = this.rooms
           .get(key)
           .history.some(
-            message => message.timestamp.getTime() + 1000 * 60 * 60 < new Date().getTime()
+            message =>
+              message.timestamp.getTime() + 1000 * 60 * 60 <
+              new Date().getTime()
           );
-        if (isOld) this.rooms.delete(key); count++;
+        if (isOld) this.rooms.delete(key);
+        count++;
       }
     }
-    console.log(`Deleted ${count} rooms for inactivity`)
+    console.log(`Deleted ${count} rooms for inactivity`);
   }
 }
 

@@ -1,18 +1,19 @@
-import React, {Component} from 'react';
+import React, { Component } from "react";
+import { view } from "react-easy-state";
+import appStore from "../stores/appStore";
 
 class Register extends Component {
+  state = {};
+
+
+
   render() {
     return (
-      <div>
-        <form onSubmit={this.props.handleSubmit}>
-          <p>ID: {this.props.id}</p>
-          <p>Name: {this.props.name}</p>
-          <p>Avatar: {this.props.avatar}</p>
-          <p>Color: {this.props.avatar}</p>
-        </form>
-      </div>
+      <form>
+        <button type="submit">Register using defaults</button>
+      </form>
     );
   }
 }
 
-export default Register;
+export default view(Register);

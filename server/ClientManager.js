@@ -6,6 +6,7 @@ class User {
     this.name = "The White Wizard";
     this.avatar = "avatar1.png";
     this.color = "#ff76fb";
+    this.socket = null;
   }
 }
 
@@ -14,11 +15,14 @@ class ClientManager {
     this.allUsers = new Map();
   }
 
-  registerNewClient(){
+  registerNewClient(socket){
     const user = new User();
+    socket.user = user;
+    user.socket = socket;
     this.allUsers.set(user.id, user);
     return user;
   }
+
 
   editClientUserData(data){
     let user = this.allUsers.get(data.id);

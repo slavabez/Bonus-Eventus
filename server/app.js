@@ -15,33 +15,6 @@ app
   .use(helmet())
   .use(express.json());
 
-app.post("/users", (req, res) => {
-  let user;
-  if (!req.body.id) {
-    // ID passed - edit
-    user = ClientManager.registerNewClient();
-  } else {
-    // No id, create new
-    user = ClientManager.editClientUserData(req.body);
-  }
-  res.send(user);
-});
-
-app.post("/rooms", async (req, res) => {
-  try {
-    const room = await RoomManager.createNewRoom(req.body.name);
-    res.send(room);
-  } catch (e) {
-    console.log(e);
-    res
-      .status(400)
-      .send({
-        error:
-          "Error creating a new room. Make sure no room with such name already exists"
-      });
-  }
-});
-
 // Serve static assets built by create-react-app
 app.use(express.static("./build"));
 
@@ -75,11 +48,12 @@ function errors(err, req, res) {
 
 io.on("connection", clientSocket => {
   // New device connected
-  console.log("New user connected");
+  console.log("New user connected", clientSocket.id);
   clientSocket.on("room.create", async data => {
     try {
-      const room = await RoomManager.createNewRoom(data.name);
+      const room = await RoomManager.createNewRoom(data);
       clientSocket.emit("room.created", room);
+      console.log(`Created new room called ${data}`);
       io.emit("room.allRooms", RoomManager.getRooms());
     } catch (e) {
       clientSocket.emit("room.created", false);
@@ -89,23 +63,33 @@ io.on("connection", clientSocket => {
     clientSocket.emit("room.allRooms", RoomManager.getRooms());
   });
 
-  clientSocket.on("room.join", (roomName) => {
+  clientSocket.on("room.join", roomName => {
+    console.log(`User ${clientSocket.id} joined ${roomName}`);
     // Check such room is created
-    if (RoomManager.rooms.has(roomName)){
-      clientSocket.join(roomName, () => {});
+    if (RoomManager.rooms.has(roomName)) {
+      clientSocket.join(roomName);
+      RoomManager.addUserToRoom(clientSocket, roomName);
     }
   });
 
-  clientSocket.on("room.leave", (roomName) => {
+  clientSocket.on("room.leave", roomName => {
     // Back to
+    clientSocket.leave(roomName);
+    RoomManager.removeUserFromRoom(clientSocket);
   });
 
+  clientSocket.on("roll", message => {
+    console.log("Message received", message);
+    console.log("From user in groups", clientSocket.rooms);
+  });
 });
 
 schedule.scheduleJob("*/15 * * * *", () => {
   // This cleaning job is run every 15 minutes
   // If a room hasn't been used in an hour, delete
-  console.log("---------------------------Initialing cleanup---------------------------");
+  console.log(
+    "---------------------------Initialing cleanup---------------------------"
+  );
   RoomManager.deleteOldRooms();
 });
 
