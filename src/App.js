@@ -8,19 +8,36 @@ import "./App.css";
 class App extends Component {
   constructor(props) {
     super(props);
+    this.socket = socket();
+    this.socket.on("room.created", data => {
+      console.log("room.created called");
+      this.onRoomCreated(data);
+      this.setState({ message: `Room "${data.name}" created` });
+    });
+    this.socket.on("room.allRooms", data => {
+      console.log("room.allRooms called", data);
+      this.setState({ rooms: data, message: `There are ${data.length} rooms` });
+    });
+
     this.state = {
-      server: socket()
+      rooms: [],
+      input: "",
+      message: ""
     };
   }
 
-  async componentDidMount() {
-    const response = await axios.post("/users", {
-      name: "lol",
-      avatar: "avatar.lol",
-      id: "i7h0o6zjnr1vd1u",
-      color: "blaaaaaaaaaaack"
+  createRoom = () => {
+    this.socket.emit("room.create", { name: this.state.input })
+  };
+
+  onRoomCreated = (data) => {
+    console.log(data);
+  };
+
+  componentDidMount(){
+    this.socket.emit("room.listAll", (all) => {
+      this.setState({ rooms: all });
     });
-    console.log(response);
   }
 
   render() {
@@ -31,6 +48,12 @@ class App extends Component {
           <h1 className="App-title">Welcome to React</h1>
         </header>
         <Register />
+        <input type="text" onChange={(e) => { this.setState({ input: e.target.value }) }} value={this.state.input}/>
+        <button onClick={this.createRoom}>Create a room</button>
+        {(this.state.message) ? <p>{this.state.message}</p> : null}
+
+        {this.state.rooms.map(room => <p key={room.name}>{room.name}</p>)}
+
       </div>
     );
   }

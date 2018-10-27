@@ -1,5 +1,6 @@
 const express = require("express");
 const helmet = require("helmet");
+const schedule = require("node-schedule");
 const app = express();
 const server = require("http").Server(app);
 const io = require("socket.io")(server);
@@ -8,11 +9,14 @@ const ClientManager = require("./ClientManager");
 const RoomManager = require("./RoomManager");
 
 // Initialize an express app with some security defaults
-app.use(https).use(helmet()).use(express.json());
+app
+  .use(https)
+  .use(helmet())
+  .use(express.json());
 
 app.post("/users", (req, res) => {
   let user;
-  if (!req.body.id){
+  if (!req.body.id) {
     // ID passed - edit
     user = ClientManager.registerNewClient();
   } else {
@@ -27,7 +31,13 @@ app.post("/rooms", async (req, res) => {
     const room = await RoomManager.createNewRoom(req.body.name);
     res.send(room);
   } catch (e) {
-    res.status(400).send({ error: "Error creating a new room. Make sure no room with such name already exists" });
+    console.log(e);
+    res
+      .status(400)
+      .send({
+        error:
+          "Error creating a new room. Make sure no room with such name already exists"
+      });
   }
 });
 
@@ -65,9 +75,27 @@ function errors(err, req, res) {
 io.on("connection", clientSocket => {
   // New device connected
   console.log("New user connected");
+  clientSocket.on("room.create", async data => {
+    try {
+      const room = await RoomManager.createNewRoom(data.name);
+      clientSocket.emit("room.created", room);
+      io.emit("room.allRooms", RoomManager.getRooms());
+    } catch (e) {
+      clientSocket.emit("room.created", false);
+    }
+  });
+  clientSocket.on("room.listAll", () => {
+    clientSocket.emit("room.allRooms", RoomManager.getRooms());
+  });
 
 
+});
 
+schedule.scheduleJob("*/15 * * * *", () => {
+  // This cleaning job is run every 15 minutes
+  // If a room hasn't been used in an hour, delete
+  console.log("---------------------------Initialing cleanup---------------------------");
+  RoomManager.deleteOldRooms();
 });
 
 module.exports = server;
