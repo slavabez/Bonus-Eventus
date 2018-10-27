@@ -1,9 +1,6 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
-import { unregister } from "./registerServiceWorker";
+import React from "react";
+import ReactDOM from "react-dom";
+import "./index.css";
+import Be from "./Be";
 
-ReactDOM.render(<App />, document.getElementById('root'));
-
-unregister();
+ReactDOM.render(<Be />, document.getElementById("root"));
