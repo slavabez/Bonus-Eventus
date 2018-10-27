@@ -7,6 +7,7 @@ const io = require("socket.io")(server);
 
 const ClientManager = require("./ClientManager");
 const RoomManager = require("./RoomManager");
+const RollManager = require("./RollManager");
 
 // Initialize an express app with some security defaults
 app
