@@ -89,6 +89,16 @@ io.on("connection", clientSocket => {
     clientSocket.emit("room.allRooms", RoomManager.getRooms());
   });
 
+  clientSocket.on("room.join", (roomName) => {
+    // Check such room is created
+    if (RoomManager.rooms.has(roomName)){
+      clientSocket.join(roomName, () => {});
+    }
+  });
+
+  clientSocket.on("room.leave", (roomName) => {
+    // Back to
+  });
 
 });
 
