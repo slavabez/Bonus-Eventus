@@ -6,7 +6,6 @@ const io = require("socket.io")(server);
 
 const ClientManager = require("./ClientManager");
 const RoomManager = require("./RoomManager");
-const { handleRegister } = require("./handlers/user");
 
 // Initialize an express app with some security defaults
 app.use(https).use(helmet()).use(express.json());
@@ -21,6 +20,15 @@ app.post("/users", (req, res) => {
     user = ClientManager.editClientUserData(req.body);
   }
   res.send(user);
+});
+
+app.post("/rooms", async (req, res) => {
+  try {
+    const room = await RoomManager.createNewRoom(req.body.name);
+    res.send(room);
+  } catch (e) {
+    res.status(400).send({ error: "Error creating a new room. Make sure no room with such name already exists" });
+  }
 });
 
 // Serve static assets built by create-react-app
@@ -57,6 +65,8 @@ function errors(err, req, res) {
 io.on("connection", clientSocket => {
   // New device connected
   console.log("New user connected");
+
+
 
 });
 
