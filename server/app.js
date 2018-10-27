@@ -16,7 +16,7 @@ app
   .use(express.json());
 
 // Serve static assets built by create-react-app
-app.use(express.static("./build"));
+app.use(express.static("build"));
 
 // If no explicit matches were found, serve index.html
 app.get("*", function(req, res) {
