@@ -50,32 +50,38 @@ class RoomManager {
   }
 
   deleteOldRooms() {
-    let count = 0;
-    for (const key of this.rooms.keys()) {
-      // First, check if there are any messages
-      if (this.rooms.get(key).history.length < 1) {
-        // no messages, if old - delete
-        if (
-          this.rooms.get(key).createdAt.getTime() + 1000 * 60 <
-          new Date().getTime()
-        ) {
+    try {
+      let count = 0;
+      for (const key of this.rooms.keys()) {
+        // First, check if there are any messages
+        if (this.rooms.get(key).history.length < 1) {
+          // no messages, if old - delete
+          if (
+            this.rooms.get(key).createdAt.getTime() + 1000 * 60 <
+            new Date().getTime()
+          ) {
+            count++;
+            this.rooms.delete(key);
+          }
+        } else {
+          // There are messages, delete ones with newest messages being older than 1 hour
+          let isOld = this.rooms
+            .get(key)
+            .history.some(
+              message =>
+                message.createdAt.getTime() + 1000 * 60 * 60 <
+                new Date().getTime()
+            );
+          if (isOld) this.rooms.delete(key);
           count++;
-          this.rooms.delete(key);
         }
-      } else {
-        // There are messages, delete ones with newest messages being older than 1 hour
-        let isOld = this.rooms
-          .get(key)
-          .history.some(
-            message =>
-              message.timestamp.getTime() + 1000 * 60 * 60 <
-              new Date().getTime()
-          );
-        if (isOld) this.rooms.delete(key);
-        count++;
       }
+      console.log(`Deleted ${count} rooms for inactivity`);
+    } catch (e) {
+      console.error("Failed to cleanup old rooms");
+      console.error(e);
     }
-    console.log(`Deleted ${count} rooms for inactivity`);
+
   }
 }
 

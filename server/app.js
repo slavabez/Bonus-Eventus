@@ -120,8 +120,8 @@ io.on("connection", clientSocket => {
     const rollMessage = await RollManager.roll(rollString, player, roomName);
     // Add message to the room
     RoomManager.postRollMessage(rollMessage, roomName);
-    // Broadcast to everyone in the room
-    clientSocket.to(roomName).emit("roll.new", rollMessage);
+    // Broadcast to everyone in the room, including the sender
+    io.to(roomName).emit("roll.new", rollMessage);
 
     console.log(`Roll came from user ${player.name} in room ${roomName}`);
   });
