@@ -1,12 +1,13 @@
 const uniqid = require("uniqid");
 
 class User {
-  constructor(){
+  constructor(props, socket){
+    const { name, avatar, color } = props;
     this.id = uniqid();
-    this.name = "The White Wizard";
-    this.avatar = "avatar1.png";
-    this.color = "#ff76fb";
-    this.socket = null;
+    this.name = name;
+    this.avatar = avatar;
+    this.color = color;
+    this.socketId = socket.id;
   }
 }
 
@@ -15,14 +16,19 @@ class ClientManager {
     this.allUsers = new Map();
   }
 
-  registerNewClient(socket){
-    const user = new User();
-    socket.user = user;
-    user.socket = socket;
+  registerNewClient(props, socket){
+    const user = new User(props, socket);
     this.allUsers.set(user.id, user);
     return user;
   }
 
+  findClientById(id){
+    if (this.allUsers.has(id)){
+      return this.allUsers.get(id);
+    } else {
+      return null;
+    }
+  }
 
   editClientUserData(data){
     let user = this.allUsers.get(data.id);

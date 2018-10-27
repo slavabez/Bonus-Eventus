@@ -48,6 +48,24 @@ function errors(err, req, res) {
 
 io.on("connection", clientSocket => {
   // New device connected
+
+  // Registration stuff
+  clientSocket.on("register.new", props => {
+    const user = ClientManager.registerNewClient(props, clientSocket);
+    clientSocket.emit("register.success", user);
+    console.log(`Registered a new user ${user.name} with gen ID ${user.id} and socket ID ${user.socketId}`);
+  });
+
+  clientSocket.on("register.restore", id => {
+    // Try to find user with the ID
+    const user = ClientManager.findClientById(id);
+    if (user) {
+      clientSocket.emit("register.success", user);
+    } else {
+      clientSocket.emit("register.restore.failed")
+    }
+  });
+
   console.log("New user connected", clientSocket.id);
   clientSocket.on("room.create", async data => {
     try {
@@ -64,18 +82,19 @@ io.on("connection", clientSocket => {
   });
 
   clientSocket.on("room.join", roomName => {
-    console.log(`User ${clientSocket.id} joined ${roomName}`);
     // Check such room is created
     if (RoomManager.rooms.has(roomName)) {
       clientSocket.join(roomName);
       RoomManager.addUserToRoom(clientSocket, roomName);
+      console.log(`User ${clientSocket.id} joined ${roomName}`);
     }
   });
 
   clientSocket.on("room.leave", roomName => {
     // Back to
     clientSocket.leave(roomName);
-    RoomManager.removeUserFromRoom(clientSocket);
+    RoomManager.removeUserFromRoom(clientSocket, roomName);
+    console.log(`User ${clientSocket.id} left ${roomName}`);
   });
 
   clientSocket.on("roll", message => {

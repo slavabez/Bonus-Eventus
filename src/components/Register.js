@@ -5,11 +5,20 @@ import appStore from "../stores/appStore";
 class Register extends Component {
   state = {};
 
+  handleSubmit = (e) => {
+    e.preventDefault();
+    const fakeProps = {
+      name: "Steve",
+      avatar: "cool.png",
+      color: "black"
+    };
 
+    appStore.register(fakeProps);
+  };
 
   render() {
     return (
-      <form>
+      <form onSubmit={this.handleSubmit}>
         <button type="submit">Register using defaults</button>
       </form>
     );

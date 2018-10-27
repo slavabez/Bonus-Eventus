@@ -30,10 +30,13 @@ class RoomManager {
     room.users.set(user.id, user);
   }
 
-  removeUserFromRoom(user) {
-    this.rooms.forEach(r => {
-      if (r.has(user.id)) r.delete(user.id);
-    });
+  removeUserFromRoom(user, roomName) {
+    if (this.rooms.has(roomName)) {
+      const room = this.rooms.get(roomName);
+      if (room.users.has(user.id)) {
+        this.rooms.get(roomName).users.delete(user.id);
+      }
+    }
   }
 
   deleteOldRooms() {
