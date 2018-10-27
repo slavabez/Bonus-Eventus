@@ -22,12 +22,25 @@ class ClientManager {
     return user;
   }
 
+  bindNewSocketId(userId, newSocketId){
+    try {
+      this.findClientById(userId).socketId = newSocketId;
+    } catch (e) {
+
+    }
+  }
+
   findClientById(id){
     if (this.allUsers.has(id)){
       return this.allUsers.get(id);
     } else {
       return null;
     }
+  }
+
+  findClientBySocketId(id){
+    // Search through the array of values
+    return Array.from(this.allUsers.values()).find(u => u.socketId === id);
   }
 
   editClientUserData(data){

@@ -30,6 +30,14 @@ class RollInput extends Component {
             this.setState({ newRoll: e.target.value });
           }}
         />
+        <button
+          type="button"
+          onClick={() => {
+            appState.sendMessage("1d20");
+          }}
+        >
+          1d20
+        </button>
       </form>
     );
   }

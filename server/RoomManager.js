@@ -30,6 +30,16 @@ class RoomManager {
     room.users.set(user.id, user);
   }
 
+  postRollMessage(rollMessage, roomName){
+    const room = this.rooms.get(roomName);
+    // If array has 20 elements or more - delete older to keep 19 newest
+    if (room.history.length > 19) {
+      room.history = room.history.slice(room.history.length - 19);
+    }
+    room.history.push(rollMessage);
+    console.log(`Roll result added to room ${roomName}, has ${room.history.length} items in it`);
+  }
+
   removeUserFromRoom(user, roomName) {
     if (this.rooms.has(roomName)) {
       const room = this.rooms.get(roomName);

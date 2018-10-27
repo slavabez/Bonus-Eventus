@@ -2,7 +2,7 @@ const yadicer = require("yadicer");
 const RollMessage = require("./RollMessage");
 
 class RollManager {
-  static async roll(nomination, author){
+  async roll(nomination, author) {
     try {
       const roll = await yadicer(nomination);
       return new RollMessage({

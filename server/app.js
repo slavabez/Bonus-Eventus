@@ -54,15 +54,21 @@ io.on("connection", clientSocket => {
   clientSocket.on("register.new", props => {
     const user = ClientManager.registerNewClient(props, clientSocket);
     clientSocket.emit("register.success", user);
-    console.log(`Registered a new user ${user.name} with gen ID ${user.id} and socket ID ${user.socketId}`);
+    console.log(
+      `Registered a new user ${user.name} with gen ID ${
+        user.id
+      } and socket ID ${user.socketId}`
+    );
   });
   clientSocket.on("register.restore", id => {
     // Try to find user with the ID
     const user = ClientManager.findClientById(id);
     if (user) {
+      // Update the new socket ID
+      ClientManager.bindNewSocketId(id, clientSocket.id);
       clientSocket.emit("register.success", user);
     } else {
-      clientSocket.emit("register.restore.failed")
+      clientSocket.emit("register.restore.failed");
     }
   });
 
@@ -90,15 +96,34 @@ io.on("connection", clientSocket => {
   });
   clientSocket.on("room.leave", roomName => {
     // Back to
-    clientSocket.leave(roomName);
+    clientSocket.leaveAll();
     RoomManager.removeUserFromRoom(clientSocket, roomName);
     console.log(`User ${clientSocket.id} left ${roomName}`);
   });
 
   // Rolling the dice
-  clientSocket.on("roll", message => {
-    console.log("Message received", message);
+  clientSocket.on("roll", async rollString => {
+    console.log("Message received", rollString);
     console.log("From user in groups", clientSocket.rooms);
+
+    // 1. Get the player data, name, avatar and color and room
+    // 2. Process the roll, get result
+    // 3. Determine which room to broadcast to and broadcast
+    const player = ClientManager.findClientBySocketId(clientSocket.id);
+    // If no player found - unauthorised roll - ignore
+    if (!player) return;
+    // If the roll doesn't belong to a room, ignore too
+    if (Object.keys(clientSocket.rooms).length < 2) return;
+    // Extract the room name that isn't the same as ID
+    const rooms = Object.values(clientSocket.rooms);
+    const roomName = rooms.find(r => r !== clientSocket.id);
+    const rollMessage = await RollManager.roll(rollString, player, roomName);
+    // Add message to the room
+    RoomManager.postRollMessage(rollMessage, roomName);
+    // Broadcast to everyone in the room
+    clientSocket.to(roomName).emit("roll.new", rollMessage);
+
+    console.log(`Roll came from user ${player.name} in room ${roomName}`);
   });
 });
 

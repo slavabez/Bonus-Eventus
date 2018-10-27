@@ -7,6 +7,7 @@ import RollInput from "./components/RollInput";
 import Status from "./components/Status";
 import Register from "./components/Register";
 import ErrorNotice from "./components/ErrorNotice";
+import RoomView from "./components/RoomView";
 
 class App extends Component {
 
@@ -22,6 +23,7 @@ class App extends Component {
         <Register/>
         <RoomAdd/>
         <RoomSelector/>
+        <RoomView/>
         <RollInput/>
       </div>
     );

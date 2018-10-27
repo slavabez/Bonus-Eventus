@@ -67,4 +67,8 @@ appStore.socket.on("register.restore.failed", () => {
   appStore.error = "Error loading saved player, please create a new player";
 });
 
+appStore.socket.on("roll.new", rollResult => {
+  console.log(`------ Got a new roll for this room ------`, rollResult);
+});
+
 export default appStore;
