@@ -1,6 +1,9 @@
 import React, { Component } from "react";
+import { view } from "react-easy-state";
 import styled from "styled-components";
 import Loading from "./LoadingSpinner";
+import appStore from "../stores/appStore";
+import { Redirect } from "react-router-dom";
 
 const avatars = [
   "/images/rogue_100.png",
@@ -24,6 +27,7 @@ const colors = [
   "#626262"
 ];
 
+//#region styled components
 const Wrapper = styled.div`
   display: flex;
   align-items: center;
@@ -110,6 +114,7 @@ const CreateButton = styled.button`
   align-items: center;
   min-height: 5rem;
 `;
+//#endregion
 
 class RegistrationSection extends Component {
   constructor(props) {
@@ -134,9 +139,16 @@ class RegistrationSection extends Component {
   handleProfileSubmit = e => {
     e.preventDefault();
     this.setState({ isLoading: true });
+    appStore.register({
+      name: this.state.name,
+      avatar: this.state.selectedAvatar,
+      color: this.state.selectedColor
+    });
   };
 
   render() {
+    // If we already have a profile, redirect ro rooms
+    if (appStore.currentUser.name) return <Redirect to="/rooms/" />;
     const renderIcons = avatars.map(a => (
       <Avatar
         src={a}
@@ -186,4 +198,4 @@ class RegistrationSection extends Component {
   }
 }
 
-export default RegistrationSection;
+export default view(RegistrationSection);
