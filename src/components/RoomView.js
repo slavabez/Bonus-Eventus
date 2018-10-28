@@ -38,6 +38,9 @@ const DicePane = styled.div`
   grid-area: dp;
   background-color: white;
   border-radius: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `;
 const History = styled.div`
   grid-area: hp;
@@ -117,6 +120,9 @@ const DiceDashboard = styled.div`
   align-items: center;
   justify-content: space-around;
   padding: 1rem 0;
+  transition: 2s width;
+  position: relative;
+  width: 100%;
 `;
 const DiceItem = styled.div`
   display: flex;
@@ -176,6 +182,20 @@ const CustomInput = styled.input`
   text-align: center;
 `;
 
+const CustomButtonToggle = styled.button`
+  transform: rotate(270deg);
+  transform-origin: center;
+  color: white;
+  background-color: #47cead;
+  margin-top: 0.5rem;
+  padding: 0.2rem 1rem;
+  border-radius: 0.5rem;
+  font-size: 1.2rem;
+  position: absolute;
+  right: -6%;
+  border: none;
+`;
+
 //#endregion
 
 const dice = [
@@ -210,9 +230,14 @@ class RoomView extends Component {
     super(props);
     // Double check we're in a room
     this.state = {
-      input: "2d10"
+      input: "2d10",
+      showCustom: false
     };
   }
+
+  toggleShowCustom = () => {
+    this.setState(os => ({ showCustom: !os.showCustom }));
+  };
 
   componentDidMount = () => {
     this.scrollToBottom();
@@ -312,18 +337,27 @@ class RoomView extends Component {
         <DicePane>
           <DiceDashboard>
             {this.renderDiceButtons()}
-            <CustomButtonWrapper onSubmit={this.handleCustomRollSubmit}>
-              <CustomInput
-                type="text"
-                pattern="[\d]{1-3}d[\d]{1-3}"
-                value={this.state.input}
-                onChange={e => {
-                  this.setState({ input: e.target.value });
-                }}
-              />
-              <p>Type anything from 1d2 to 100d100</p>
-              <button type="submit">Custom roll</button>
-            </CustomButtonWrapper>
+            <CustomButtonToggle
+              onClick={() => {
+                this.toggleShowCustom();
+              }}
+            >
+              Toggle Custom
+            </CustomButtonToggle>
+            {this.state.showCustom ? (
+              <CustomButtonWrapper onSubmit={this.handleCustomRollSubmit}>
+                <CustomInput
+                  type="text"
+                  pattern="[\d]{1-3}d[\d]{1-3}"
+                  value={this.state.input}
+                  onChange={e => {
+                    this.setState({ input: e.target.value });
+                  }}
+                />
+                <p>Type anything from 1d2 to 100d100</p>
+                <button type="submit">Custom roll</button>
+              </CustomButtonWrapper>
+            ) : null}
           </DiceDashboard>
         </DicePane>
         <History>
