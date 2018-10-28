@@ -41,7 +41,7 @@ const RightPane = styled.div`
 const PlayerList = styled.div`
   display: flex;
   flex-direction: column;
-  align-items: start;
+  align-items: center;
   justify-content: center;
   padding-top: 1rem;
 `;
@@ -103,45 +103,6 @@ const CustomRollWrapper = styled.div`
 `;
 //#endregion
 
-const fakePlayers = [
-  {
-    name: "Steven",
-    avatar: "/images/monk_100.png",
-    color: "#FF6D4E",
-    id: "someid"
-  },
-  {
-    name: "Alyona",
-    avatar: "/images/cleric_100.png",
-    color: "#FFCE48"
-  },
-  {
-    name: "Rich",
-    avatar: "/images/warlock_100.png",
-    color: "#219CEE"
-  },
-  {
-    name: "Steven",
-    avatar: "/images/monk_100.png",
-    color: "#626262"
-  },
-  {
-    name: "Alyona",
-    avatar: "/images/cleric_100.png",
-    color: "#FFCE48"
-  },
-  {
-    name: "Rich",
-    avatar: "/images/warlock_100.png",
-    color: "#219CEE"
-  },
-  {
-    name: "Steven",
-    avatar: "/images/monk_100.png",
-    color: "#626262"
-  }
-];
-
 class RoomView extends Component {
   constructor(props) {
     super(props);
@@ -169,7 +130,7 @@ class RoomView extends Component {
       <Player key={Math.random()}>
         <Avatar src={p.avatar} alt={p.name} color={p.color} />
         <Name color={p.color}>
-          {p.name} {p.id ? "(You)" : ""}
+          {p.name} {p.id === appStore.currentUser.id ? "(You)" : ""}
         </Name>
       </Player>
     ));
@@ -236,9 +197,13 @@ class RoomView extends Component {
           >
             Roll 5d6
           </button>
-          <button onClick={() => {
-            appStore.socket.emit("test");
-          }}>Test</button>
+          <button
+            onClick={() => {
+              appStore.socket.emit("test");
+            }}
+          >
+            Test
+          </button>
         </DicePane>
         <History>
           <HistoryWrapper>

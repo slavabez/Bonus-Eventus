@@ -73,6 +73,11 @@ io.on("connection", clientSocket => {
       clientSocket.emit("register.restore.failed");
     }
   });
+  clientSocket.on("register.delete", () => {
+    // Client wants to delete user
+    const user = ClientManager.findClientBySocketId(clientSocket.id);
+    ClientManager.removeClient(user.id);
+  });
 
   // Rooms, joining and leaving
   clientSocket.on("room.create", async data => {
@@ -114,10 +119,7 @@ io.on("connection", clientSocket => {
     RoomManager.removeUserFromRoom(user.id, roomName);
     console.log(`User ${clientSocket.id} left ${roomName}`);
     // Broadcast updated list
-    io.to(roomName).emit(
-      "room.players",
-      RoomManager.getUsersInRoom(roomName)
-    );
+    io.to(roomName).emit("room.players", RoomManager.getUsersInRoom(roomName));
   });
 
   // Rolling the dice
@@ -132,7 +134,7 @@ io.on("connection", clientSocket => {
     // If no player found - unauthorised roll - ignore
     if (!player) return;
     // If the roll doesn't belong to a room, ignore too
-    if (Object.keys(clientSocket.rooms).length < 2) return;
+    // if (Object.keys(clientSocket.rooms).length < 2) return;
     // Extract the room name that isn't the same as ID
     const rooms = Object.values(clientSocket.rooms);
     const roomName = rooms.find(r => r !== clientSocket.id);

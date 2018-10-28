@@ -27,6 +27,7 @@ const appStore = store({
       color: ""
     };
     appStore.leaveRoom(appStore.inRoom);
+    appStore.socket.emit("register.delete");
   },
   createNewRoom: name => {
     appStore.socket.emit("room.create", name);
@@ -36,13 +37,11 @@ const appStore = store({
     // Load the messages from that room, if any
     appStore.rollHistory = appStore.rooms.find(r => r.name === name).history;
     appStore.inRoom = name;
-    //appStore.roommates = appStore.rooms.find(r => r.name === name).users;
     console.log(
       `Joined room "${name}", found and loaded ${
         appStore.rollHistory.length
       } rolls into history...`
     );
-    //console.log("roomamtes", appStore.rooms.find(r => r.name === name).users);
   },
   leaveRoom: name => {
     appStore.socket.emit("room.leave", name);

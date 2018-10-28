@@ -52,7 +52,13 @@ class ClientManager {
   }
 
   removeClient(id) {
-    if (this.currentUsers.has(id)) this.currentUsers.delete(id);
+    if (this.currentUsers.has(id)) {
+      this.currentUsers.delete(id);
+      console.log(
+        `Removed ${id} from current users, users now:`,
+        this.currentUsers
+      );
+    }
   }
 }
 

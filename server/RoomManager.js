@@ -78,7 +78,7 @@ class RoomManager {
       const users = Array.from(r.users.values());
       console.log("users in each room", users);
       if (users.length > 0)
-        io.in(r.name).emit("room.clients", users);
+        io.in(r.name).emit("room.players", users);
         console.log(
           `--- Room ${r.name} has ${
             users.length
