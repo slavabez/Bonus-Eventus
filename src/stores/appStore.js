@@ -17,7 +17,7 @@ const appStore = store({
   error: "",
   register: registrationInfo => {
     appStore.socket.emit("register.new", registrationInfo);
-    console.log(`Sent request to register user ${registrationInfo.name}`);
+    // console.log(`Sent request to register user ${registrationInfo.name}`);
   },
   logout: () => {
     Cookie.remove("player_id");
@@ -37,11 +37,11 @@ const appStore = store({
     // Load the messages from that room, if any
     appStore.rollHistory = appStore.rooms.find(r => r.name === name).history;
     appStore.inRoom = name;
-    console.log(
+    /*console.log(
       `Joined room "${name}", found and loaded ${
         appStore.rollHistory.length
       } rolls into history...`
-    );
+    );*/
   },
   leaveRoom: name => {
     appStore.socket.emit("room.leave", name);
@@ -62,7 +62,7 @@ const appStore = store({
 
 appStore.socket.on("room.allRooms", rooms => {
   appStore.rooms = rooms;
-  console.log(rooms);
+  // console.log(rooms);
 });
 
 appStore.socket.on("register.success", user => {
@@ -78,7 +78,7 @@ appStore.socket.on("register.success", user => {
 });
 
 appStore.socket.on("connect", () => {
-  console.log("Connected to server, beginning initial data grab");
+  // console.log("Connected to server, beginning initial data grab");
   // Ping for initial info
   // Load rooms
   appStore.socket.emit("room.listAll");
@@ -88,7 +88,7 @@ appStore.socket.on("connect", () => {
   if (savedId) {
     // attempt to re-assign user if it still exists
     appStore.socket.emit("register.restore", savedId);
-    console.log(`Found player's previous data - loading...`);
+    // console.log(`Found player's previous data - loading...`);
   }
 });
 
@@ -101,11 +101,11 @@ appStore.socket.on("register.restore.failed", () => {
   appStore.error = "Error loading saved player, please create a new player";
   // Delete the old coolie
   Cookie.remove("player_id");
-  console.log(`Failed to load saved player data - removing cookie...`);
+  // console.log(`Failed to load saved player data - removing cookie...`);
 });
 
 appStore.socket.on("roll.new", rollResult => {
-  console.log(`------ Got a new roll for this room ------`, rollResult);
+  // console.log(`------ Got a new roll for this room ------`, rollResult);
 
   // If more than 50 messages - delete old
   if (appStore.rollHistory.length > 49) {
@@ -118,7 +118,7 @@ appStore.socket.on("roll.new", rollResult => {
 });
 
 appStore.socket.on("room.players", players => {
-  console.log(`Received a new list of players in our room:`, players);
+  // console.log(`Received a new list of players in our room:`, players);
   appStore.roommates = players;
 });
 
