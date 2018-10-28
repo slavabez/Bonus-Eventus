@@ -196,6 +196,7 @@ const CustomButtonToggle = styled.button`
   right: -6%;
   border: none;
   cursor: pointer;
+  font-family: "Dosis", sans-serif;
 `;
 
 //#endregion
