@@ -2,13 +2,13 @@ import React, { Component } from "react";
 import styled from "styled-components";
 
 const avatars = [
-  "images/rogue_400.png",
-  "images/sorcerer_400.png",
-  "images/paladin_400.png",
-  "images/warlock_400.png",
-  "images/monk_400.png",
-  "images/cleric_400.png",
-  "images/bard_400.png"
+  "images/rogue_100.png",
+  "images/sorcerer_100.png",
+  "images/paladin_100.png",
+  "images/warlock_100.png",
+  "images/monk_100.png",
+  "images/cleric_100.png",
+  "images/bard_100.png"
 ];
 
 const colors = [
