@@ -11,10 +11,10 @@ const Wrapper = styled.div`
   padding: 1.5rem;
   height: 90%;
   grid-template-areas:
-    "lp dp dp dp dp dp dp rp"
-    "lp hp hp hp hp hp hp rp"
-    "lp hp hp hp hp hp hp rp"
-    "lp hp hp hp hp hp hp rp";
+    "lp dp dp dp dp"
+    "lp hp hp hp hp"
+    "lp hp hp hp hp"
+    "lp hp hp hp hp";
 `;
 const LeftPane = styled.div`
   grid-area: lp;
@@ -94,6 +94,7 @@ const MessageBody = styled.div`
   border-radius: 0.5rem;
   color: ${props => props.color}
   font-size: 1.1rem;
+  align-items: center;
 `;
 const RollAsString = styled.span`
   margin-right: 1rem;
@@ -133,7 +134,7 @@ const DiceItem = styled.div`
 const DiceImage = styled.img`
   max-width: 7vw;
 `;
-const DiceName = styled.span`
+const DiceName = styled.button`
   color: white;
   background-color: #47cead;
   margin-top: 0.5rem;
@@ -141,6 +142,29 @@ const DiceName = styled.span`
   border-radius: 0.5rem;
   font-size: 1.2rem;
 `;
+const CustomButtonWrapper = styled.form`
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0.5rem;
+  border-radius: 1rem;
+
+  p {
+    font-size: 1.2rem;
+  }
+`;
+const CustomInput = styled.input`
+  color: #47cead;
+  margin-top: 0.5rem;
+  padding: 0.2rem 0.5rem;
+  border-radius: 0.5rem;
+  font-family: "Dosis", sans-serif;
+  border: 1px solid #47cead;
+  font-size: 1.5rem;
+  text-align: center;
+`;
+
 //#endregion
 
 const dice = [
@@ -174,6 +198,9 @@ class RoomView extends Component {
   constructor(props) {
     super(props);
     // Double check we're in a room
+    this.state = {
+      input: "2d10"
+    };
   }
 
   componentDidMount = () => {
@@ -182,6 +209,15 @@ class RoomView extends Component {
 
   componentDidUpdate = () => {
     this.scrollToBottom();
+  };
+
+  handleCustomRollSubmit = e => {
+    e.preventDefault();
+    // Verify it's within range
+    const parts = this.state.input.split("d");
+    if (parts[0] > 0 && parts[0] <= 100 && parts[1] >= 2 && parts[1] <= 100) {
+      this.roll(this.state.input);
+    }
   };
 
   roll = string => {
@@ -243,9 +279,11 @@ class RoomView extends Component {
 
   renderDiceButtons = () => {
     return dice.map(d => (
-      <DiceItem onClick={() => {
-        appStore.sendRoll("1" + d.name);
-      }}>
+      <DiceItem
+        onClick={() => {
+          appStore.sendRoll("1" + d.name);
+        }}
+      >
         <DiceImage src={d.image} alt={d.name} title={`Roll a ${d.name}`} />
         <DiceName>{d.name}</DiceName>
       </DiceItem>
@@ -261,7 +299,21 @@ class RoomView extends Component {
           <PlayerList>{this.renderPlayers()}</PlayerList>
         </LeftPane>
         <DicePane>
-          <DiceDashboard>{this.renderDiceButtons()}</DiceDashboard>
+          <DiceDashboard>
+            {this.renderDiceButtons()}
+            <CustomButtonWrapper onSubmit={this.handleCustomRollSubmit}>
+              <CustomInput
+                type="text"
+                pattern="[\d]{1-3}d[\d]{1-3}"
+                value={this.state.input}
+                onChange={e => {
+                  this.setState({ input: e.target.value });
+                }}
+              />
+              <p>Type anything from 1d2 to 100d100</p>
+              <button type="submit">Custom roll</button>
+            </CustomButtonWrapper>
+          </DiceDashboard>
         </DicePane>
         <History>
           <HistoryWrapper>
@@ -274,7 +326,7 @@ class RoomView extends Component {
           </HistoryWrapper>
         </History>
         <RightPane>
-          <CustomRollWrapper>Custom rolls</CustomRollWrapper>
+          <CustomRollWrapper />
         </RightPane>
       </Wrapper>
     );
