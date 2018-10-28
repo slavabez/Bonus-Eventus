@@ -85,11 +85,12 @@ const MessageBody = styled.div`
 const RollAsString = styled.span`
   margin-right: 1rem;
 `;
-const RollBreakdown = styled.span``;
+const RollBreakdown = styled.span`
+  margin-right: 0.5rem;
+`;
 const RollTotal = styled.span`
   color: #47cead;
   text-decoration: underline;
-  margin-left: 0.5rem;
 `;
 //#endregion
 
@@ -175,6 +176,11 @@ const fakeMessages = [
 ];
 
 class RoomView extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {};
+  }
+
   renderPlayers = () => {
     return fakePlayers.map(p => (
       <Player>
@@ -207,7 +213,7 @@ class RoomView extends Component {
       const body = (
         <MessageBody color={m.author.color} title={m.createdAt.toTimeString()}>
           <RollAsString>{m.rollString}: </RollAsString>
-          <RollBreakdown>{breakdown}</RollBreakdown>
+          {breakdown ? <RollBreakdown>{breakdown}</RollBreakdown> : null}
           <RollTotal>{m.total}</RollTotal>
         </MessageBody>
       );
