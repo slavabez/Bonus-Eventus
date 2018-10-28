@@ -110,8 +110,15 @@ const FormRow = styled.div`
 `;
 //#endregion
 class RoomSelection extends Component {
+  state = {
+    newName: ""
+  };
   handleRoomJoin = roomName => {
     appStore.joinRoom(roomName);
+  };
+  handleRoomCreate = e => {
+    e.preventDefault();
+    appStore.createNewRoom(this.state.newName);
   };
 
   renderRoomList = () => {
@@ -127,7 +134,10 @@ class RoomSelection extends Component {
     ));
   };
   render() {
+    // If no profile - create profile
     if (!appStore.currentUser.name) return <Redirect to="/profile" />;
+    // If already in a room - redirect to room view
+    if (appStore.inRoom) return <Redirect to="/rooms/in/" />;
     return (
       <Container>
         <JoinRoomWrapper>
@@ -139,10 +149,19 @@ class RoomSelection extends Component {
         <CreateRoomWrapper>
           <h1>Create a Room</h1>
           <CreateRoomBackground>
-            <CreateRoomDialog>
+            <CreateRoomDialog onSubmit={this.handleRoomCreate}>
               <FormRow>
                 <label htmlFor="new-room-name">Name:</label>
-                <input type="text" id="input-room-name" />
+                <input
+                  type="text"
+                  id="input-room-name"
+                  value={this.state.newName}
+                  onChange={e => {
+                    this.setState({ newName: e.target.value });
+                  }}
+                  required
+                  minLength="3"
+                />
               </FormRow>
               <button>Create</button>
             </CreateRoomDialog>
