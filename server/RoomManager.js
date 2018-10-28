@@ -26,18 +26,29 @@ class RoomManager {
   }
 
   addUserToRoom(user, roomName) {
-    const room = this.rooms.get(roomName);
-
+    // If room exists, add user by ID
+    if (this.rooms.has(roomName))
+      this.rooms.get(roomName).users.set(user.id, user);
   }
 
-  postRollMessage(rollMessage, roomName){
+  postRollMessage(rollMessage, roomName) {
     const room = this.rooms.get(roomName);
     // If array has 20 elements or more - delete older to keep 19 newest
     if (room.history.length > 19) {
       room.history = room.history.slice(room.history.length - 19);
     }
     room.history.push(rollMessage);
-    console.log(`Roll result added to room ${roomName}, has ${room.history.length} items in it`);
+    console.log(
+      `Roll result added to room ${roomName}, has ${
+        room.history.length
+      } items in it`
+    );
+  }
+
+  getUsersInRoom(name) {
+    if (this.rooms.has(name))
+      // Room exists, return users as array
+      return Array.from(this.rooms.get(name).users.values());
   }
 
   removeUserFromRoom(id, roomName) {
@@ -49,15 +60,31 @@ class RoomManager {
     }
   }
 
-  updateRooms(io){
+  removeFromAllRooms(id){
+    // Cycle through all rooms, remove this user from all
+    this.rooms.forEach(r => {
+      r.users.forEach(u => {
+        if (u.id === id) {
+          r.users.delete(id);
+          console.log(`Removed user ${id} from room ${r.name}`);
+        }
+      });
+    });
+  }
+
+  updateRooms(io) {
     // Go through all rooms, emit connected client list to each group
     this.rooms.forEach(r => {
       const users = Array.from(r.users.values());
       console.log("users in each room", users);
-      if (users.length > 0) // io.in(r.name).emit("room.clients", users);
-      console.log(`--- Room ${r.name} has ${users.length} connected clients, emitting to that room ---`);
+      if (users.length > 0)
+        io.in(r.name).emit("room.clients", users);
+        console.log(
+          `--- Room ${r.name} has ${
+            users.length
+          } connected clients, emitting to that room ---`
+        );
     });
-
   }
 
   deleteOldRooms() {
@@ -92,7 +119,6 @@ class RoomManager {
       console.error("Failed to cleanup old rooms");
       console.error(e);
     }
-
   }
 }
 

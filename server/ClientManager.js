@@ -44,6 +44,13 @@ class ClientManager {
     return Array.from(this.currentUsers.values()).find(u => u.socketId === id);
   }
 
+  getUserIdFromSocketId(socketId) {
+    // Pray this works
+    return Array.from(this.currentUsers.values()).find(
+      u => u.socketId === socketId
+    ).id;
+  }
+
   removeClient(id) {
     if (this.currentUsers.has(id)) this.currentUsers.delete(id);
   }

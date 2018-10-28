@@ -17,7 +17,7 @@ const appStore = store({
   error: "",
   register: registrationInfo => {
     appStore.socket.emit("register.new", registrationInfo);
-    console.log(`Sent request to register user ${registrationInfo.name}`)
+    console.log(`Sent request to register user ${registrationInfo.name}`);
   },
   logout: () => {
     Cookie.remove("player_id");
@@ -36,14 +36,21 @@ const appStore = store({
     // Load the messages from that room, if any
     appStore.rollHistory = appStore.rooms.find(r => r.name === name).history;
     appStore.inRoom = name;
-    console.log(`Joined room "${name}", found and loaded ${appStore.rollHistory.length} rolls into history...`)
+    //appStore.roommates = appStore.rooms.find(r => r.name === name).users;
+    console.log(
+      `Joined room "${name}", found and loaded ${
+        appStore.rollHistory.length
+      } rolls into history...`
+    );
+    //console.log("roomamtes", appStore.rooms.find(r => r.name === name).users);
   },
   leaveRoom: name => {
     appStore.socket.emit("room.leave", name);
     appStore.inRoom = false;
+    appStore.roommates = [];
   },
   refreshRooms: () => {
-    appStore.socket.emit("room.listAll")
+    appStore.socket.emit("room.listAll");
   },
   sendRoll: message => {
     appStore.socket.emit("roll", message);
@@ -103,11 +110,17 @@ appStore.socket.on("roll.new", rollResult => {
 
   // If more than 50 messages - delete old
   if (appStore.rollHistory.length > 49) {
-    appStore.rollHistory = appStore.rollHistory.slice(appStore.rollHistory.length - 49);
+    appStore.rollHistory = appStore.rollHistory.slice(
+      appStore.rollHistory.length - 49
+    );
   }
 
   appStore.rollHistory.push(rollResult);
+});
 
+appStore.socket.on("room.players", players => {
+  console.log(`Received a new list of players in our room:`, players);
+  appStore.roommates = players;
 });
 
 export default appStore;

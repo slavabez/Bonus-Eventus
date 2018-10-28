@@ -67,6 +67,7 @@ io.on("connection", clientSocket => {
     if (user) {
       // Update the new socket ID
       ClientManager.updateSocketId(id, clientSocket.id);
+      console.log(`Updated socket ID for user ${id}`);
       clientSocket.emit("register.success", user);
     } else {
       clientSocket.emit("register.restore.failed");
@@ -91,15 +92,32 @@ io.on("connection", clientSocket => {
     // Check such room is created
     if (RoomManager.rooms.has(roomName)) {
       clientSocket.join(roomName);
-      RoomManager.addUserToRoom(clientSocket.id, roomName);
+      // Find actual user
+      const user = ClientManager.findClientBySocketId(clientSocket.id);
+      RoomManager.addUserToRoom(user, roomName);
       console.log(`User ${clientSocket.id} joined ${roomName}`);
+      // Broadcast to all members in the room a list of all connected users
+      io.to(roomName).emit(
+        "room.players",
+        RoomManager.getUsersInRoom(roomName)
+      );
     }
+  });
+  clientSocket.on("test", () => {
+    const user = ClientManager.findClientBySocketId(clientSocket.id);
+    console.log(`Got this User with your socket (${clientSocket.id})`, user);
   });
   clientSocket.on("room.leave", roomName => {
     // Back to
     clientSocket.leaveAll();
-    RoomManager.removeUserFromRoom(clientSocket, roomName);
+    const user = ClientManager.findClientBySocketId(clientSocket.id);
+    RoomManager.removeUserFromRoom(user.id, roomName);
     console.log(`User ${clientSocket.id} left ${roomName}`);
+    // Broadcast updated list
+    io.to(roomName).emit(
+      "room.players",
+      RoomManager.getUsersInRoom(roomName)
+    );
   });
 
   // Rolling the dice
@@ -129,8 +147,13 @@ io.on("connection", clientSocket => {
 
   clientSocket.on("disconnect", reason => {
     console.log(`${clientSocket.id} disconnected`, reason);
-    RoomManager.removeUserFromRoom(clientSocket.id);
-    RoomManager.updateRooms(io);
+    const user = ClientManager.findClientBySocketId(clientSocket.id);
+    if (user) {
+      console.log(`User left, we found him, kick him from rooms`, user);
+      RoomManager.removeFromAllRooms(user.id);
+      // Broadcast to all rooms with updated userlist
+      RoomManager.updateRooms(io);
+    }
   });
 });
 

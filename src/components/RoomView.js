@@ -165,7 +165,7 @@ class RoomView extends Component {
   };
 
   renderPlayers = () => {
-    return fakePlayers.map(p => (
+    return appStore.roommates.map(p => (
       <Player key={Math.random()}>
         <Avatar src={p.avatar} alt={p.name} color={p.color} />
         <Name color={p.color}>
@@ -236,6 +236,9 @@ class RoomView extends Component {
           >
             Roll 5d6
           </button>
+          <button onClick={() => {
+            appStore.socket.emit("test");
+          }}>Test</button>
         </DicePane>
         <History>
           <HistoryWrapper>
