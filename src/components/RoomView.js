@@ -188,7 +188,7 @@ class RoomView extends Component {
 
   renderPlayers = () => {
     return fakePlayers.map(p => (
-      <Player>
+      <Player key={Math.random()}>
         <Avatar src={p.avatar} alt={p.name} color={p.color} />
         <Name color={p.color}>
           {p.name} {p.id ? "(You)" : ""}
@@ -224,7 +224,7 @@ class RoomView extends Component {
       );
 
       return (
-        <RollMessage>
+        <RollMessage key={Math.random()}>
           {avatar}
           {body}
         </RollMessage>
