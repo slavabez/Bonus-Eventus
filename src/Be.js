@@ -1,16 +1,15 @@
 import React, { Component } from "react";
-import { BrowserRouter as Router, Route, Link } from "react-router-dom";
+import { BrowserRouter as Router, Route } from "react-router-dom";
 import { view } from "react-easy-state";
 import styled from "styled-components";
 import RoomSelection from "./components/RoomSelection";
 import RegistrationSection from "./components/RegistrationSection";
 
-import "./main.css";
-
-import appStore from "./stores/appStore";
 import WelcomeMessage from "./components/WelcomeMessage";
 import RoomView from "./components/RoomView";
 import LoginStatus from "./components/LoginStatus";
+
+import "./main.css";
 
 //#region styled components
 const AppWrapper = styled.div`
@@ -25,18 +24,6 @@ const Header = styled.header`
 `;
 const Logo = styled.img`
   height: 100%;
-`;
-const Nav = styled.nav`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: aquamarine;
-
-  a {
-    padding: 0.25rem 1rem;
-    font-size: 1.5rem;
-    text-decoration: none;
-  }
 `;
 const AppBody = styled.section`
   align-items: center;
@@ -63,12 +50,6 @@ class Be extends Component {
         </Header>
         <Router>
           <div>
-            {/*<Nav>
-              <Link to="/">Intro</Link>
-              <Link to="/profile/">Profile</Link>
-              <Link to="/rooms/">Rooms</Link>
-              <Link to="/rooms/in/">Sample Room</Link>
-            </Nav>*/}
             <AppBody>
               <Route path="/" exact component={WelcomeMessage} />
               <Route path="/profile/" component={RegistrationSection} />

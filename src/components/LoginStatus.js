@@ -20,15 +20,6 @@ const Avatar = styled.img`
   border: 6px solid ${props => props.color};
   cursor: pointer;
 `;
-const LogoutButton = styled.button`
-  font-family: "Dosis", sans-serif;
-  margin-top: 0.5rem;
-  border: none;
-  background-color: ${props => props.color};
-  color: white;
-  font-size: 1.2rem;
-  border-radius: 0.5rem;
-`;
 const ExitRoomButton = styled.button`
   font-family: "Dosis", sans-serif;
   font-size: 1.5rem;

@@ -25,6 +25,7 @@ const LeftPane = styled.div`
   align-items: center;
   justify-content: start;
   overflow-y: auto;
+  min-width: 12vw;
 
   h1 {
     background-color: #00d0ae;
@@ -169,6 +170,7 @@ const CustomButtonWrapper = styled.form`
     font-size: 1.2rem;
     font-family: "Dosis", sans-serif;
     border: none;
+    cursor: pointer;
   }
 `;
 const CustomInput = styled.input`
@@ -194,6 +196,7 @@ const CustomButtonToggle = styled.button`
   position: absolute;
   right: -6%;
   border: none;
+  cursor: pointer;
 `;
 
 //#endregion
