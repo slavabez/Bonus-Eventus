@@ -132,6 +132,7 @@ const DiceItem = styled.div`
 `;
 const DiceImage = styled.img`
   max-width: 7vw;
+  max-height: 145px;
 `;
 const DiceName = styled.span`
   color: white;
