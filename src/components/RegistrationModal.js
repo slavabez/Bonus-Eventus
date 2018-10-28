@@ -29,6 +29,12 @@ const Wrapper = styled.form`
   flex-direction: column;
   padding: 1rem;
   background-image: linear-gradient(to right, #f8cff7, #d4fbfe);
+
+  h1 {
+    text-align: center;
+    font-size: 2rem;
+    color: #003E34;
+  }
 `;
 
 const IconContainer = styled.div`
@@ -58,7 +64,8 @@ const ColorPicker = styled.div`
   width: 3rem;
   background-color: ${props => props.color};
   border-radius: 2rem;
-  border: ${props => (props.isSelected ? "4px solid black" : "none")};
+  border: ${props =>
+    props.isSelected ? "4px solid black" : "4px solid transparent"};
   cursor: pointer;
 `;
 const InputForm = styled.div`
@@ -85,6 +92,15 @@ const InputForm = styled.div`
 const CreateButton = styled.button`
   width: fit-content;
   align-self: center;
+  background-color: ${props => props.color};
+  font-family: "Dosis", sans-serif;
+  padding: 2px 50px;
+  border-radius: 2rem;
+  color: white;
+  font-size: 2rem;
+  text-align: center;
+  border: none;
+  margin-bottom: 2rem;
 `;
 
 class RegistrationModal extends Component {
@@ -132,6 +148,7 @@ class RegistrationModal extends Component {
     ));
     return (
       <Wrapper>
+        <h1>Choose how you will be seen in a room</h1>
         <IconContainer>{renderIcons}</IconContainer>
         <ColorContainer>{renderColors}</ColorContainer>
         <InputForm color={this.state.selectedColor}>
@@ -145,7 +162,9 @@ class RegistrationModal extends Component {
             onChange={this.onNameInput}
           />
         </InputForm>
-        <CreateButton type="submit">Create profile</CreateButton>
+        <CreateButton type="submit" color={this.state.selectedColor}>
+          Create profile
+        </CreateButton>
       </Wrapper>
     );
   }
