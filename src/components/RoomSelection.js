@@ -194,7 +194,7 @@ class RoomSelection extends Component {
                   }}
                   required
                   minLength="3"
-                  maxLength="25"
+                  maxLength="15"
                 />
               </FormRow>
               <button>Create</button>

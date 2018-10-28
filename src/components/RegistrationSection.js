@@ -184,7 +184,7 @@ class RegistrationSection extends Component {
               value={this.state.name}
               required
               minLength="3"
-              maxLength="25"
+              maxLength="15"
               id="register-name-select"
               onChange={this.onNameInput}
             />
