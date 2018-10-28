@@ -17,6 +17,7 @@ const appStore = store({
   error: "",
   register: registrationInfo => {
     appStore.socket.emit("register.new", registrationInfo);
+    console.log(`Sent request to register user ${registrationInfo.name}`)
   },
   logout: () => {
     Cookie.remove("player_id");
@@ -46,6 +47,10 @@ const appStore = store({
   },
   sendRoll: message => {
     appStore.socket.emit("roll", message);
+  },
+  reconnect: () => {
+    appStore.socket.disconnect();
+    appStore.socket.connect();
   }
 });
 
@@ -67,7 +72,7 @@ appStore.socket.on("register.success", user => {
 });
 
 appStore.socket.on("connect", () => {
-  console.log("------------- Connected, pinging for fresh info -------------");
+  console.log("Connected to server, beginning initial data grab");
   // Ping for initial info
   // Load rooms
   appStore.socket.emit("room.listAll");

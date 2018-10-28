@@ -72,6 +72,7 @@ io.on("connection", clientSocket => {
     }
   });
 
+
   // Rooms, joining and leaving
   clientSocket.on("room.create", async data => {
     try {

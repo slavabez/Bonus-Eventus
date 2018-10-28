@@ -12,6 +12,7 @@ const Content = styled.div`
   max-width: 600px;
   text-align: center;
   font-size: 2rem;
+  color: #05927b;
   
   a {
     width: fit-content;
