@@ -27,7 +27,7 @@ class RoomManager {
 
   addUserToRoom(user, roomName) {
     const room = this.rooms.get(roomName);
-    room.users.set(user.id, user);
+
   }
 
   postRollMessage(rollMessage, roomName){
@@ -40,13 +40,24 @@ class RoomManager {
     console.log(`Roll result added to room ${roomName}, has ${room.history.length} items in it`);
   }
 
-  removeUserFromRoom(user, roomName) {
+  removeUserFromRoom(id, roomName) {
     if (this.rooms.has(roomName)) {
       const room = this.rooms.get(roomName);
-      if (room.users.has(user.id)) {
-        this.rooms.get(roomName).users.delete(user.id);
+      if (room.users.has(id)) {
+        this.rooms.get(roomName).users.delete(id);
       }
     }
+  }
+
+  updateRooms(io){
+    // Go through all rooms, emit connected client list to each group
+    this.rooms.forEach(r => {
+      const users = Array.from(r.users.values());
+      console.log("users in each room", users);
+      if (users.length > 0) // io.in(r.name).emit("room.clients", users);
+      console.log(`--- Room ${r.name} has ${users.length} connected clients, emitting to that room ---`);
+    });
+
   }
 
   deleteOldRooms() {

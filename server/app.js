@@ -52,7 +52,8 @@ io.on("connection", clientSocket => {
 
   // Registration stuff
   clientSocket.on("register.new", props => {
-    const user = ClientManager.registerNewClient(props, clientSocket);
+    props.socketId = clientSocket.id;
+    const user = ClientManager.registerNewClient(props);
     clientSocket.emit("register.success", user);
     console.log(
       `Registered a new user ${user.name} with gen ID ${
@@ -65,13 +66,12 @@ io.on("connection", clientSocket => {
     const user = ClientManager.findClientById(id);
     if (user) {
       // Update the new socket ID
-      ClientManager.bindNewSocketId(id, clientSocket.id);
+      ClientManager.updateSocketId(id, clientSocket.id);
       clientSocket.emit("register.success", user);
     } else {
       clientSocket.emit("register.restore.failed");
     }
   });
-
 
   // Rooms, joining and leaving
   clientSocket.on("room.create", async data => {
@@ -91,7 +91,7 @@ io.on("connection", clientSocket => {
     // Check such room is created
     if (RoomManager.rooms.has(roomName)) {
       clientSocket.join(roomName);
-      RoomManager.addUserToRoom(clientSocket, roomName);
+      RoomManager.addUserToRoom(clientSocket.id, roomName);
       console.log(`User ${clientSocket.id} joined ${roomName}`);
     }
   });
@@ -129,9 +129,10 @@ io.on("connection", clientSocket => {
 
   clientSocket.on("disconnect", reason => {
     console.log(`${clientSocket.id} disconnected`, reason);
+    RoomManager.removeUserFromRoom(clientSocket.id);
+    RoomManager.updateRooms(io);
   });
 });
-
 
 schedule.scheduleJob("*/15 * * * *", () => {
   // This cleaning job is run every 15 minutes
