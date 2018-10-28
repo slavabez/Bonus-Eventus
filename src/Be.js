@@ -10,6 +10,7 @@ import "./main.css";
 import appStore from "./stores/appStore";
 import WelcomeMessage from "./components/WelcomeMessage";
 import RoomView from "./components/RoomView";
+import LoginStatus from "./components/LoginStatus";
 
 //#region styled components
 const AppWrapper = styled.div`
@@ -20,10 +21,10 @@ const Header = styled.header`
   display: flex;
   justify-content: center;
   align-items: center;
-
-  img {
-    height: 100%;
-  }
+  position: relative;
+`;
+const Logo = styled.img`
+  height: 100%;
 `;
 const Nav = styled.nav`
   display: flex;
@@ -57,7 +58,8 @@ class Be extends Component {
     return (
       <AppWrapper>
         <Header>
-          <img src="/images/logo.png" alt="Bonus Eventus Logo" />
+          <Logo src="/images/logo.png" alt="Bonus Eventus Logo" />
+          <LoginStatus />
         </Header>
         <Router>
           <div>

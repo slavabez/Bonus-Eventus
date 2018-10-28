@@ -1,6 +1,10 @@
 import React, { Component } from "react";
 import styled from "styled-components";
+import { view } from "react-easy-state";
+import appStore from "../stores/appStore";
+import { Redirect } from "react-router-dom";
 
+//#region styled components
 const Container = styled.div`
   display: flex;
   justify-content: center;
@@ -104,21 +108,32 @@ const FormRow = styled.div`
     color: #47cead;
   }
 `;
-
+//#endregion
 class RoomSelection extends Component {
+  handleRoomJoin = roomName => {
+    appStore.joinRoom(roomName);
+  };
+
+  renderRoomList = () => {
+    return appStore.rooms.map(r => (
+      <li
+        key={r.name}
+        onDoubleClick={() => {
+          this.handleRoomJoin(r.name);
+        }}
+      >
+        {r.name}
+      </li>
+    ));
+  };
   render() {
+    if (!appStore.currentUser.name) return <Redirect to="/profile" />;
     return (
       <Container>
         <JoinRoomWrapper>
           <h1>Join a room</h1>
           <RoomListWrapper>
-            <RoomList>
-              <li>asd</li>
-              <li>asd</li>
-              <li>asd</li>
-              <li>asd</li>
-              <li>asd</li>
-            </RoomList>
+            <RoomList>{this.renderRoomList()}</RoomList>
           </RoomListWrapper>
         </JoinRoomWrapper>
         <CreateRoomWrapper>
@@ -138,4 +153,4 @@ class RoomSelection extends Component {
   }
 }
 
-export default RoomSelection;
+export default view(RoomSelection);

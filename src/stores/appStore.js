@@ -16,6 +16,14 @@ const appStore = store({
   register: registrationInfo => {
     appStore.socket.emit("register.new", registrationInfo);
   },
+  logout: () => {
+    Cookie.remove("player_id");
+    appStore.currentUser = {
+      name: "",
+      avatar: "",
+      color: ""
+    }
+  },
   createNewRoom: name => {
     appStore.socket.emit("room.create", name);
   },
