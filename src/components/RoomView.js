@@ -161,7 +161,7 @@ class RoomView extends Component {
   };
 
   scrollToBottom = () => {
-    this.el.scrollIntoView({ behavior: "smooth" })
+    if (this.el) this.el.scrollIntoView({ behavior: "smooth" });
   };
 
   renderPlayers = () => {

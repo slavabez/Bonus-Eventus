@@ -125,6 +125,10 @@ io.on("connection", clientSocket => {
 
     console.log(`Roll came from user ${player.name} in room ${roomName}`);
   });
+
+  clientSocket.on("disconnect", reason => {
+    console.log(`${clientSocket.id} disconnected`, reason);
+  });
 });
 
 
