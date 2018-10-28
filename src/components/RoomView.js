@@ -134,7 +134,7 @@ const DiceItem = styled.div`
 const DiceImage = styled.img`
   max-width: 7vw;
 `;
-const DiceName = styled.button`
+const DiceName = styled.span`
   color: white;
   background-color: #47cead;
   margin-top: 0.5rem;
@@ -152,6 +152,17 @@ const CustomButtonWrapper = styled.form`
 
   p {
     font-size: 1.2rem;
+  }
+
+  button {
+    color: white;
+    background-color: #47cead;
+    margin-top: 0.5rem;
+    padding: 0.2rem 1rem;
+    border-radius: 0.5rem;
+    font-size: 1.2rem;
+    font-family: "Dosis", sans-serif;
+    border: none;
   }
 `;
 const CustomInput = styled.input`
