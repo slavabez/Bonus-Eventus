@@ -2,15 +2,14 @@ import React, { Component } from "react";
 import styled from "styled-components";
 
 const avatars = [
-  "images/rogue_100.png",
-  "images/sorcerer_100.png",
-  "images/paladin_100.png",
-  "images/warlock_100.png",
-  "images/monk_100.png",
-  "images/cleric_100.png",
-  "images/bard_100.png"
+  "/images/rogue_100.png",
+  "/images/sorcerer_100.png",
+  "/images/paladin_100.png",
+  "/images/warlock_100.png",
+  "/images/monk_100.png",
+  "/images/cleric_100.png",
+  "/images/bard_100.png"
 ];
-
 const colors = [
   "#FF87C3",
   "#FF5364",
@@ -24,19 +23,24 @@ const colors = [
   "#626262"
 ];
 
-const Wrapper = styled.form`
+const Wrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+const Form = styled.form`
+  max-width: 850px;
   display: flex;
   flex-direction: column;
   padding: 1rem;
-  background-image: linear-gradient(to right, #f8cff7, #d4fbfe);
 
   h1 {
     text-align: center;
     font-size: 2rem;
-    color: #003E34;
+    color: #003e34;
   }
 `;
-
 const IconContainer = styled.div`
   display: flex;
   align-items: center;
@@ -103,7 +107,7 @@ const CreateButton = styled.button`
   margin-bottom: 2rem;
 `;
 
-class RegistrationModal extends Component {
+class RegistrationSection extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -148,26 +152,28 @@ class RegistrationModal extends Component {
     ));
     return (
       <Wrapper>
-        <h1>Choose how you will be seen in a room</h1>
-        <IconContainer>{renderIcons}</IconContainer>
-        <ColorContainer>{renderColors}</ColorContainer>
-        <InputForm color={this.state.selectedColor}>
-          <label htmlFor="register-name-select">Name</label>
-          <input
-            type="text"
-            value={this.state.name}
-            required
-            minLength="3"
-            id="register-name-select"
-            onChange={this.onNameInput}
-          />
-        </InputForm>
-        <CreateButton type="submit" color={this.state.selectedColor}>
-          Create profile
-        </CreateButton>
+        <Form>
+          <h1>Choose how you will be seen in a room</h1>
+          <IconContainer>{renderIcons}</IconContainer>
+          <ColorContainer>{renderColors}</ColorContainer>
+          <InputForm color={this.state.selectedColor}>
+            <label htmlFor="register-name-select">Name</label>
+            <input
+              type="text"
+              value={this.state.name}
+              required
+              minLength="3"
+              id="register-name-select"
+              onChange={this.onNameInput}
+            />
+          </InputForm>
+          <CreateButton type="submit" color={this.state.selectedColor}>
+            Create profile
+          </CreateButton>
+        </Form>
       </Wrapper>
     );
   }
 }
 
-export default RegistrationModal;
+export default RegistrationSection;

@@ -4,6 +4,7 @@ import socket from "../socket";
 
 const appStore = store({
   socket: socket(),
+
   rooms: [],
   currentUser: {
     name: "",
@@ -59,12 +60,16 @@ appStore.socket.on("connect", () => {
   if (savedId) {
     // attempt to re-assign user if it still exists
     appStore.socket.emit("register.restore", savedId);
+    console.log(`Found player's previous data - loading...`);
   }
 });
 
 appStore.socket.on("register.restore.failed", () => {
   // Tried restoring user - failed, likely cause server forgot the player (rebooted)
   appStore.error = "Error loading saved player, please create a new player";
+  // Delete the old coolie
+  Cookie.remove("player_id");
+  console.log(`Failed to load saved player data - removing cookie...`);
 });
 
 appStore.socket.on("roll.new", rollResult => {
