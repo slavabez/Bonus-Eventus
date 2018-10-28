@@ -31,13 +31,14 @@ const LogoutButton = styled.button`
 `;
 const ExitRoomButton = styled.button`
   font-family: "Dosis", sans-serif;
-  font-size: 2rem;
+  font-size: 1.5rem;
   border: none;
-  background-color: orange;
+  background-color: #FF6E50;
   padding: 0.5rem 2rem;
   border-radius: 1.5rem;
   color: white;
   cursor: pointer;
+  margin-right: 1rem;
 `;
 
 const LoginStatus = () => {

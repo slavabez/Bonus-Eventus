@@ -21,9 +21,18 @@ const LeftPane = styled.div`
   background-color: white;
   border-radius: 1rem;
   display: flex;
-  align-items: start;
-  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  justify-content: start;
   overflow-y: auto;
+
+  h1 {
+    background-color: #00d0ae;
+    font-family: "Dosis", sans-serif;
+    padding: 2px 2rem;
+    border-radius: 1rem;
+    color: white;
+  }
 `;
 const DicePane = styled.div`
   grid-area: dp;
@@ -101,7 +110,65 @@ const CustomRollWrapper = styled.div`
   background-color: white;
   border-radius: 0.5rem;
 `;
+
+const DiceDashboard = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  padding: 1rem 0;
+`;
+const DiceItem = styled.div`
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0.5rem;
+  border-radius: 1rem;
+  cursor: pointer;
+
+  :hover {
+    background-color: #e7f8ff;
+  }
+`;
+const DiceImage = styled.img`
+  max-width: 7vw;
+`;
+const DiceName = styled.span`
+  color: white;
+  background-color: #47cead;
+  margin-top: 0.5rem;
+  padding: 0.2rem 1rem;
+  border-radius: 0.5rem;
+  font-size: 1.2rem;
+`;
 //#endregion
+
+const dice = [
+  {
+    image: "/images/d4.png",
+    name: "d4"
+  },
+  {
+    image: "/images/d6.png",
+    name: "d6"
+  },
+  {
+    image: "/images/d8.png",
+    name: "d8"
+  },
+  {
+    image: "/images/d10.png",
+    name: "d10"
+  },
+  {
+    image: "/images/d12.png",
+    name: "d12"
+  },
+  {
+    image: "/images/d20.png",
+    name: "d20"
+  }
+];
 
 class RoomView extends Component {
   constructor(props) {
@@ -174,36 +241,27 @@ class RoomView extends Component {
     });
   };
 
+  renderDiceButtons = () => {
+    return dice.map(d => (
+      <DiceItem onClick={() => {
+        appStore.sendRoll("1" + d.name);
+      }}>
+        <DiceImage src={d.image} alt={d.name} title={`Roll a ${d.name}`} />
+        <DiceName>{d.name}</DiceName>
+      </DiceItem>
+    ));
+  };
+
   render() {
     if (!appStore.inRoom) return <Redirect to="/profile" />;
     return (
       <Wrapper>
         <LeftPane>
+          <h1>{appStore.inRoom}</h1>
           <PlayerList>{this.renderPlayers()}</PlayerList>
         </LeftPane>
         <DicePane>
-          <h1>Welcome to {appStore.inRoom}</h1>
-          <button
-            onClick={() => {
-              this.roll("1d20");
-            }}
-          >
-            Roll 1d20
-          </button>
-          <button
-            onClick={() => {
-              this.roll("5d6");
-            }}
-          >
-            Roll 5d6
-          </button>
-          <button
-            onClick={() => {
-              appStore.socket.emit("test");
-            }}
-          >
-            Test
-          </button>
+          <DiceDashboard>{this.renderDiceButtons()}</DiceDashboard>
         </DicePane>
         <History>
           <HistoryWrapper>
