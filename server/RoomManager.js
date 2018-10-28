@@ -38,11 +38,11 @@ class RoomManager {
       room.history = room.history.slice(room.history.length - 19);
     }
     room.history.push(rollMessage);
-    console.log(
+    /*console.log(
       `Roll result added to room ${roomName}, has ${
         room.history.length
       } items in it`
-    );
+    );*/
   }
 
   getUsersInRoom(name) {
@@ -66,7 +66,7 @@ class RoomManager {
       r.users.forEach(u => {
         if (u.id === id) {
           r.users.delete(id);
-          console.log(`Removed user ${id} from room ${r.name}`);
+          // console.log(`Removed user ${id} from room ${r.name}`);
         }
       });
     });
@@ -76,14 +76,14 @@ class RoomManager {
     // Go through all rooms, emit connected client list to each group
     this.rooms.forEach(r => {
       const users = Array.from(r.users.values());
-      console.log("users in each room", users);
+      // console.log("users in each room", users);
       if (users.length > 0)
         io.in(r.name).emit("room.players", users);
-        console.log(
+        /*console.log(
           `--- Room ${r.name} has ${
             users.length
           } connected clients, emitting to that room ---`
-        );
+        );*/
     });
   }
 
@@ -116,8 +116,7 @@ class RoomManager {
       }
       console.log(`Deleted ${count} rooms for inactivity`);
     } catch (e) {
-      console.error("Failed to cleanup old rooms");
-      console.error(e);
+      console.error("Failed to cleanup old rooms", e);
     }
   }
 }
