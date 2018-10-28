@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import styled from "styled-components";
 import Modal from "react-awesome-modal";
 import RoomSelection from "./components/RoomSelection";
+import RegistrationModal from "./components/RegistrationModal";
 
 const AppWrapper = styled.div`
   font-family: "Dosis", sans-serif;
@@ -23,18 +24,13 @@ const AppBody = styled.section`
   background-image: linear-gradient(to right, #f8cff7, #d4fbfe);
 `;
 
+
 class Be extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      showRegistration: false
+      showRegistration: true
     };
-  }
-
-  componentDidMount() {
-    setTimeout(() => {
-      this.openModal();
-    }, 2000);
   }
 
   openModal() {
@@ -55,15 +51,10 @@ class Be extends Component {
           <RoomSelection />
           <Modal
             visible={this.state.showRegistration}
-            width="400"
-            height="300"
             effect="fadeInUp"
             onClickAway={() => this.closeModal()}
           >
-            <div>
-              <h1>Title</h1>
-              <p>Some Contents</p>
-            </div>
+            <RegistrationModal />
           </Modal>
         </AppBody>
       </AppWrapper>
