@@ -27,7 +27,7 @@ const appStore = store({
     appStore.socket.emit("room.leave", name);
     appStore.inRoom = false;
   },
-  sendMessage: message => {
+  sendRoll: message => {
     appStore.socket.emit("roll", message);
   }
 });

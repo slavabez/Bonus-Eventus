@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import styled from "styled-components";
+import Loading from "./LoadingSpinner";
 
 const avatars = [
   "/images/rogue_100.png",
@@ -105,6 +106,9 @@ const CreateButton = styled.button`
   text-align: center;
   border: none;
   margin-bottom: 2rem;
+  display: flex;
+  align-items: center;
+  min-height: 5rem;
 `;
 
 class RegistrationSection extends Component {
@@ -113,7 +117,8 @@ class RegistrationSection extends Component {
     this.state = {
       selectedAvatar: avatars[0],
       selectedColor: colors[0],
-      name: ""
+      name: "",
+      isLoading: false
     };
   }
 
@@ -125,6 +130,10 @@ class RegistrationSection extends Component {
   };
   onNameInput = e => {
     this.setState({ name: e.target.value });
+  };
+  handleProfileSubmit = e => {
+    e.preventDefault();
+    this.setState({ isLoading: true });
   };
 
   render() {
@@ -152,7 +161,7 @@ class RegistrationSection extends Component {
     ));
     return (
       <Wrapper>
-        <Form>
+        <Form onSubmit={this.handleProfileSubmit}>
           <h1>Choose how you will be seen in a room</h1>
           <AvatarContainer>{renderIcons}</AvatarContainer>
           <ColorContainer>{renderColors}</ColorContainer>
@@ -169,6 +178,7 @@ class RegistrationSection extends Component {
           </InputForm>
           <CreateButton type="submit" color={this.state.selectedColor}>
             Create profile
+            {this.state.isLoading ? <Loading /> : null}
           </CreateButton>
         </Form>
       </Wrapper>

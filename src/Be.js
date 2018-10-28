@@ -5,10 +5,13 @@ import styled from "styled-components";
 import RoomSelection from "./components/RoomSelection";
 import RegistrationSection from "./components/RegistrationSection";
 
+import "./main.css";
+
 import appStore from "./stores/appStore";
 import WelcomeMessage from "./components/WelcomeMessage";
 import RoomView from "./components/RoomView";
 
+//#region styled components
 const AppWrapper = styled.div`
   font-family: "Dosis", sans-serif;
 `;
@@ -40,6 +43,7 @@ const AppBody = styled.section`
   height: 85vh;
   background-image: linear-gradient(to right, #f8cff7, #d4fbfe);
 `;
+//#endregion
 
 class Be extends Component {
   constructor(props) {
@@ -61,13 +65,13 @@ class Be extends Component {
               <Link to="/">Intro</Link>
               <Link to="/profile/">Profile</Link>
               <Link to="/rooms/">Rooms</Link>
-              <Link to="/rooms/sample/">Sample Room</Link>
+              <Link to="/rooms/in/">Sample Room</Link>
             </Nav>
             <AppBody>
               <Route path="/" exact component={WelcomeMessage} />
               <Route path="/profile/" component={RegistrationSection} />
               <Route path="/rooms/" exact component={RoomSelection} />
-              <Route path="/rooms/sample/" component={RoomView} />
+              <Route path="/rooms/in/" component={RoomView} />
             </AppBody>
           </div>
         </Router>
