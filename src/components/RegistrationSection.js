@@ -41,13 +41,13 @@ const Form = styled.form`
     color: #003e34;
   }
 `;
-const IconContainer = styled.div`
+const AvatarContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
   margin-bottom: 2rem;
 `;
-const Icon = styled.img`
+const Avatar = styled.img`
   max-width: 8rem;
   margin: 0.5rem;
   border: ${props =>
@@ -129,7 +129,7 @@ class RegistrationSection extends Component {
 
   render() {
     const renderIcons = avatars.map(a => (
-      <Icon
+      <Avatar
         src={a}
         alt={a}
         key={a}
@@ -154,7 +154,7 @@ class RegistrationSection extends Component {
       <Wrapper>
         <Form>
           <h1>Choose how you will be seen in a room</h1>
-          <IconContainer>{renderIcons}</IconContainer>
+          <AvatarContainer>{renderIcons}</AvatarContainer>
           <ColorContainer>{renderColors}</ColorContainer>
           <InputForm color={this.state.selectedColor}>
             <label htmlFor="register-name-select">Name</label>

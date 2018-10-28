@@ -2,12 +2,12 @@ import React, { Component } from "react";
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 import { view } from "react-easy-state";
 import styled from "styled-components";
-import Modal from "react-awesome-modal";
 import RoomSelection from "./components/RoomSelection";
 import RegistrationSection from "./components/RegistrationSection";
 
 import appStore from "./stores/appStore";
 import WelcomeMessage from "./components/WelcomeMessage";
+import RoomView from "./components/RoomView";
 
 const AppWrapper = styled.div`
   font-family: "Dosis", sans-serif;
@@ -49,14 +49,6 @@ class Be extends Component {
     };
   }
 
-  openModal() {
-    this.setState({ showRegistration: true });
-  }
-
-  closeModal() {
-    this.setState({ showRegistration: false });
-  }
-
   render() {
     return (
       <AppWrapper>
@@ -69,11 +61,13 @@ class Be extends Component {
               <Link to="/">Intro</Link>
               <Link to="/profile/">Profile</Link>
               <Link to="/rooms/">Rooms</Link>
+              <Link to="/rooms/sample/">Sample Room</Link>
             </Nav>
             <AppBody>
               <Route path="/" exact component={WelcomeMessage} />
               <Route path="/profile/" component={RegistrationSection} />
-              <Route path="/rooms/" component={RoomSelection} />
+              <Route path="/rooms/" exact component={RoomSelection} />
+              <Route path="/rooms/sample/" component={RoomView} />
             </AppBody>
           </div>
         </Router>
