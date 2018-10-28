@@ -5,7 +5,7 @@ class RollManager {
   async roll(nomination, author) {
     try {
       const roll = await yadicer(nomination);
-      return RollMessage({
+      return new RollMessage({
         authorName: author.name,
         authorAvatar: author.avatar,
         authorColor: author.color,

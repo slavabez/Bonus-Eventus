@@ -124,13 +124,14 @@ class RoomSelection extends Component {
   handleRoomCreate = e => {
     e.preventDefault();
     appStore.createNewRoom(this.state.newName);
+    this.setState({ newName: "" });
   };
 
   renderRoomList = () => {
     return appStore.rooms.map(r => (
       <li
         key={r.name}
-        onDoubleClick={() => {
+        onClick={() => {
           this.handleRoomJoin(r.name);
         }}
       >
@@ -167,6 +168,7 @@ class RoomSelection extends Component {
                   }}
                   required
                   minLength="3"
+                  maxLength="25"
                 />
               </FormRow>
               <button>Create</button>

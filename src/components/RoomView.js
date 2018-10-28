@@ -61,7 +61,12 @@ const Name = styled.span`
   color: ${props => props.color};
 `;
 
-const HistoryWrapper = styled.div``;
+const HistoryWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-top: 1rem;
+`;
 const RollMessage = styled.div`
   display: flex;
   align-items: center;
@@ -134,48 +139,6 @@ const fakePlayers = [
   }
 ];
 
-const fakeMessages = [
-  {
-    author: {
-      name: "Rich",
-      avatar: "/images/warlock_100.png",
-      color: "#219CEE"
-    },
-    total: 12,
-    rollString: "1d20",
-    rolls: [
-      {
-        order: 1,
-        sides: 20,
-        result: 12
-      }
-    ],
-    createdAt: new Date()
-  },
-  {
-    author: {
-      name: "Steven",
-      avatar: "/images/monk_100.png",
-      color: "#626262"
-    },
-    total: 14,
-    rollString: "2d10",
-    rolls: [
-      {
-        order: 1,
-        sides: 10,
-        result: 6
-      },
-      {
-        order: 2,
-        sides: 10,
-        result: 8
-      }
-    ],
-    createdAt: new Date()
-  }
-];
-
 class RoomView extends Component {
   constructor(props) {
     super(props);
@@ -198,7 +161,7 @@ class RoomView extends Component {
   };
 
   renderRollHistory = () => {
-    return fakeMessages.map(m => {
+    return appStore.rollHistory.map(m => {
       // Construct the message object
       const avatar = (
         <MessageAvatar
@@ -211,12 +174,13 @@ class RoomView extends Component {
       // If only one roll - don't show roll breakdown
       // use a reducer to get the values
       const breakdown =
-        m.rolls.length !== 1
-          ? m.rolls.reduce((a, v) => a.result + " + " + v.result) + " = "
-          : null;
+        m.rolls.length !== 1 ? m.rolls.map(r => r.result).join(" + ") + " = " : null;
 
       const body = (
-        <MessageBody color={m.author.color} title={m.createdAt.toTimeString()}>
+        <MessageBody
+          color={m.author.color}
+          title={new Date(m.createdAt).toTimeString()}
+        >
           <RollAsString>{m.rollString}: </RollAsString>
           {breakdown ? <RollBreakdown>{breakdown}</RollBreakdown> : null}
           <RollTotal>{m.total}</RollTotal>

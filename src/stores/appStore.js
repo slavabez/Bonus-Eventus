@@ -12,6 +12,8 @@ const appStore = store({
     color: ""
   },
   inRoom: false,
+  rollHistory: [],
+  roommates: [],
   error: "",
   register: registrationInfo => {
     appStore.socket.emit("register.new", registrationInfo);
@@ -30,7 +32,10 @@ const appStore = store({
   },
   joinRoom: name => {
     appStore.socket.emit("room.join", name);
+    // Load the messages from that room, if any
+    appStore.rollHistory = appStore.rooms.find(r => r.name === name).history;
     appStore.inRoom = name;
+    console.log(`Joined room "${name}", found and loaded ${appStore.rollHistory.length} rolls into history...`)
   },
   leaveRoom: name => {
     appStore.socket.emit("room.leave", name);
@@ -87,6 +92,7 @@ appStore.socket.on("register.restore.failed", () => {
 
 appStore.socket.on("roll.new", rollResult => {
   console.log(`------ Got a new roll for this room ------`, rollResult);
+  appStore.rollHistory.push(rollResult);
 });
 
 export default appStore;
