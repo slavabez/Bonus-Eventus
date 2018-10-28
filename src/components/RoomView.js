@@ -149,8 +149,15 @@ const CustomButtonWrapper = styled.form`
   padding: 0.5rem;
   border-radius: 1rem;
 
-  p {
-    font-size: 1.2rem;
+  span {
+    font-size: 1.1rem;
+    padding-top: 1rem;
+  }
+
+  @media (max-width: 1024px) {
+    p {
+      display: none;
+    }
   }
 
   button {
@@ -174,6 +181,7 @@ const CustomInput = styled.input`
   border: 1px solid #47cead;
   font-size: 1.5rem;
   text-align: center;
+  max-width: 100px;
 `;
 
 const CustomButtonToggle = styled.button`
@@ -185,7 +193,6 @@ const CustomButtonToggle = styled.button`
   padding: 0.2rem 1rem;
   border-radius: 0.5rem;
   font-size: 1.2rem;
-  position: absolute;
   right: -6%;
   border: none;
   cursor: pointer;
@@ -333,13 +340,6 @@ class RoomView extends Component {
         <DicePane>
           <DiceDashboard>
             {this.renderDiceButtons()}
-            <CustomButtonToggle
-              onClick={() => {
-                this.toggleShowCustom();
-              }}
-            >
-              Toggle Custom
-            </CustomButtonToggle>
             {this.state.showCustom ? (
               <CustomButtonWrapper onSubmit={this.handleCustomRollSubmit}>
                 <CustomInput
@@ -350,11 +350,18 @@ class RoomView extends Component {
                     this.setState({ input: e.target.value });
                   }}
                 />
-                <p>Type anything from 1d2 to 100d100</p>
+                <span>1d2 to 100d100</span>
                 <button type="submit">Custom roll</button>
               </CustomButtonWrapper>
             ) : null}
           </DiceDashboard>
+          <CustomButtonToggle
+            onClick={() => {
+              this.toggleShowCustom();
+            }}
+          >
+            Toggle Custom
+          </CustomButtonToggle>
         </DicePane>
         <History>
           <HistoryWrapper>
