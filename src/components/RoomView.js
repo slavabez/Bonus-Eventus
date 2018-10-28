@@ -180,10 +180,9 @@ class RoomView extends Component {
   constructor(props) {
     super(props);
     // Double check we're in a room
-
   }
 
-  roll = (string) => {
+  roll = string => {
     appStore.sendRoll(string);
   };
 
@@ -234,15 +233,28 @@ class RoomView extends Component {
   };
 
   render() {
-    if (!appStore.inRoom) return <Redirect to="/profile"/>;
+    if (!appStore.inRoom) return <Redirect to="/profile" />;
     return (
       <Wrapper>
         <LeftPane>
           <PlayerList>{this.renderPlayers()}</PlayerList>
         </LeftPane>
         <DicePane>
-          <button onClick={() => { this.roll("1d20") }}>Roll 1d20</button>
-          <button onClick={() => { this.roll("5d6") }}>Roll 5d6</button>
+          <h1>Welcome to {appStore.inRoom}</h1>
+          <button
+            onClick={() => {
+              this.roll("1d20");
+            }}
+          >
+            Roll 1d20
+          </button>
+          <button
+            onClick={() => {
+              this.roll("5d6");
+            }}
+          >
+            Roll 5d6
+          </button>
         </DicePane>
         <History>
           <HistoryWrapper>{this.renderRollHistory()}</HistoryWrapper>

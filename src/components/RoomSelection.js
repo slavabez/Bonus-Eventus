@@ -40,6 +40,10 @@ const RoomListWrapper = styled.div`
   border-radius: 2rem;
   width: 90%;
   height: 80%;
+
+  p {
+    text-align: center;
+  }
 `;
 
 const RoomList = styled.ul`
@@ -53,6 +57,7 @@ const RoomList = styled.ul`
     color: #47cead;
     border-radius: 2rem;
     padding: 0.25rem 0.25rem 0.25rem 1rem;
+    cursor: pointer;
   }
 
   li:hover {
@@ -143,6 +148,7 @@ class RoomSelection extends Component {
         <JoinRoomWrapper>
           <h1>Join a room</h1>
           <RoomListWrapper>
+            <p>Click to join a room</p>
             <RoomList>{this.renderRoomList()}</RoomList>
           </RoomListWrapper>
         </JoinRoomWrapper>

@@ -22,7 +22,8 @@ const appStore = store({
       name: "",
       avatar: "",
       color: ""
-    }
+    };
+    appStore.leaveRoom(appStore.inRoom);
   },
   createNewRoom: name => {
     appStore.socket.emit("room.create", name);
@@ -70,6 +71,10 @@ appStore.socket.on("connect", () => {
     appStore.socket.emit("register.restore", savedId);
     console.log(`Found player's previous data - loading...`);
   }
+});
+
+appStore.socket.on("room.allRooms", rooms => {
+  appStore.rooms = rooms;
 });
 
 appStore.socket.on("register.restore.failed", () => {
