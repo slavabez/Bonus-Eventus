@@ -50,7 +50,8 @@ const RoomList = styled.ul`
   list-style: none;
   padding: 0;
   margin: 2.5rem;
-  height: 88%;
+  height: 75%;
+  overflow-y: auto;
 
   li {
     font-size: 1.8rem;
@@ -113,6 +114,22 @@ const FormRow = styled.div`
     color: #47cead;
   }
 `;
+
+const Header = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+`;
+const RefreshButton = styled.button`
+  font-size: 1.2rem;
+  border: none;
+  margin-left: 1rem;
+  font-family: "Dosis", sans-serif;
+  border-radius: 0.5rem;
+  background-color: #47cead;
+  color: white;
+`;
 //#endregion
 class RoomSelection extends Component {
   state = {
@@ -149,7 +166,16 @@ class RoomSelection extends Component {
         <JoinRoomWrapper>
           <h1>Join a room</h1>
           <RoomListWrapper>
-            <p>Click to join a room</p>
+            <Header>
+              <p>Click to join a room</p>
+              <RefreshButton
+                onClick={() => {
+                  appStore.refreshRooms();
+                }}
+              >
+                Refresh
+              </RefreshButton>
+            </Header>
             <RoomList>{this.renderRoomList()}</RoomList>
           </RoomListWrapper>
         </JoinRoomWrapper>

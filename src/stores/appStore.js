@@ -41,6 +41,9 @@ const appStore = store({
     appStore.socket.emit("room.leave", name);
     appStore.inRoom = false;
   },
+  refreshRooms: () => {
+    appStore.socket.emit("room.listAll")
+  },
   sendRoll: message => {
     appStore.socket.emit("roll", message);
   }
@@ -92,7 +95,14 @@ appStore.socket.on("register.restore.failed", () => {
 
 appStore.socket.on("roll.new", rollResult => {
   console.log(`------ Got a new roll for this room ------`, rollResult);
+
+  // If more than 50 messages - delete old
+  if (appStore.rollHistory.length > 49) {
+    appStore.rollHistory = appStore.rollHistory.slice(appStore.rollHistory.length - 49);
+  }
+
   appStore.rollHistory.push(rollResult);
+
 });
 
 export default appStore;

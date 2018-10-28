@@ -24,7 +24,6 @@ const LeftPane = styled.div`
   align-items: start;
   justify-content: center;
   overflow-y: auto;
-  max-height: 80%;
 `;
 const DicePane = styled.div`
   grid-area: dp;
@@ -33,6 +32,7 @@ const DicePane = styled.div`
 `;
 const History = styled.div`
   grid-area: hp;
+  overflow-y: auto;
 `;
 const RightPane = styled.div`
   grid-area: rp;
@@ -62,9 +62,7 @@ const Name = styled.span`
 `;
 
 const HistoryWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
+  height: calc(100% - 1rem);
   padding-top: 1rem;
 `;
 const RollMessage = styled.div`
@@ -97,6 +95,11 @@ const RollBreakdown = styled.span`
 const RollTotal = styled.span`
   color: #47cead;
   text-decoration: underline;
+`;
+
+const CustomRollWrapper = styled.div`
+  background-color: white;
+  border-radius: 0.5rem;
 `;
 //#endregion
 
@@ -145,8 +148,20 @@ class RoomView extends Component {
     // Double check we're in a room
   }
 
+  componentDidMount = () => {
+    this.scrollToBottom();
+  };
+
+  componentDidUpdate = () => {
+    this.scrollToBottom();
+  };
+
   roll = string => {
     appStore.sendRoll(string);
+  };
+
+  scrollToBottom = () => {
+    this.el.scrollIntoView({ behavior: "smooth" })
   };
 
   renderPlayers = () => {
@@ -174,7 +189,9 @@ class RoomView extends Component {
       // If only one roll - don't show roll breakdown
       // use a reducer to get the values
       const breakdown =
-        m.rolls.length !== 1 ? m.rolls.map(r => r.result).join(" + ") + " = " : null;
+        m.rolls.length !== 1
+          ? m.rolls.map(r => r.result).join(" + ") + " = "
+          : null;
 
       const body = (
         <MessageBody
@@ -221,9 +238,18 @@ class RoomView extends Component {
           </button>
         </DicePane>
         <History>
-          <HistoryWrapper>{this.renderRollHistory()}</HistoryWrapper>
+          <HistoryWrapper>
+            {this.renderRollHistory()}
+            <div
+              ref={el => {
+                this.el = el;
+              }}
+            />
+          </HistoryWrapper>
         </History>
-        <RightPane>Right Pane</RightPane>
+        <RightPane>
+          <CustomRollWrapper>Custom rolls</CustomRollWrapper>
+        </RightPane>
       </Wrapper>
     );
   }

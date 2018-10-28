@@ -63,12 +63,12 @@ class Be extends Component {
         </Header>
         <Router>
           <div>
-            <Nav>
+            {/*<Nav>
               <Link to="/">Intro</Link>
               <Link to="/profile/">Profile</Link>
               <Link to="/rooms/">Rooms</Link>
               <Link to="/rooms/in/">Sample Room</Link>
-            </Nav>
+            </Nav>*/}
             <AppBody>
               <Route path="/" exact component={WelcomeMessage} />
               <Route path="/profile/" component={RegistrationSection} />
