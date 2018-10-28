@@ -8,13 +8,14 @@ import appStore from "../stores/appStore";
 const Wrapper = styled.div`
   display: grid;
   grid-gap: 1.5rem;
-  padding: 1.5rem;
-  height: 90%;
+  height: 80vh;
   grid-template-areas:
-    "lp dp dp dp dp"
-    "lp hp hp hp hp"
-    "lp hp hp hp hp"
-    "lp hp hp hp hp";
+    "lp dp"
+    "lp hp";
+  grid-template-rows: 200px;
+  grid-template-columns: 200px;
+  width: 96%;
+  padding: 2%;
 `;
 const LeftPane = styled.div`
   grid-area: lp;
@@ -25,7 +26,6 @@ const LeftPane = styled.div`
   align-items: center;
   justify-content: start;
   overflow-y: auto;
-  min-width: 12vw;
 
   h1 {
     background-color: #00d0ae;
@@ -46,9 +46,6 @@ const DicePane = styled.div`
 const History = styled.div`
   grid-area: hp;
   overflow-y: auto;
-`;
-const RightPane = styled.div`
-  grid-area: rp;
 `;
 
 const PlayerList = styled.div`
@@ -109,11 +106,6 @@ const RollBreakdown = styled.span`
 const RollTotal = styled.span`
   color: #47cead;
   text-decoration: underline;
-`;
-
-const CustomRollWrapper = styled.div`
-  background-color: white;
-  border-radius: 0.5rem;
 `;
 
 const DiceDashboard = styled.div`
@@ -322,6 +314,7 @@ class RoomView extends Component {
         onClick={() => {
           appStore.sendRoll("1" + d.name);
         }}
+        key={d.name}
       >
         <DiceImage src={d.image} alt={d.name} title={`Roll a ${d.name}`} />
         <DiceName>{d.name}</DiceName>
@@ -351,7 +344,7 @@ class RoomView extends Component {
               <CustomButtonWrapper onSubmit={this.handleCustomRollSubmit}>
                 <CustomInput
                   type="text"
-                  pattern="[\d]{1-3}d[\d]{1-3}"
+                  pattern="[1-9]{1,3}d[0-9]{1,3}"
                   value={this.state.input}
                   onChange={e => {
                     this.setState({ input: e.target.value });
@@ -373,9 +366,6 @@ class RoomView extends Component {
             />
           </HistoryWrapper>
         </History>
-        <RightPane>
-          <CustomRollWrapper />
-        </RightPane>
       </Wrapper>
     );
   }
