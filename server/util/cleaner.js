@@ -1,5 +1,1 @@
-
-
-const cleaningJob = schedule.scheduleJob("10 * * * *", () => {
-
-});
+const cleaningJob = schedule.scheduleJob("10 * * * *", () => {});

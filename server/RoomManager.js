@@ -98,7 +98,7 @@ class RoomManager {
         if (this.rooms.get(key).history.length < 1) {
           // no messages, if old - delete
           if (
-            this.rooms.get(key).createdAt.getTime() + 1000 * 60 <
+            this.rooms.get(key).createdAt.getTime() + 1000 * 60 * 60 <
             new Date().getTime()
           ) {
             console.log(
@@ -115,7 +115,8 @@ class RoomManager {
             .get(key)
             .history.some(
               message =>
-                message.createdAt.getTime() + 1000 * 60 < new Date().getTime()
+                message.createdAt.getTime() + 1000 * 60 * 60 <
+                new Date().getTime()
             );
           if (isOld) {
             console.log(

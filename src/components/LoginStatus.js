@@ -24,7 +24,7 @@ const ExitRoomButton = styled.button`
   font-family: "Dosis", sans-serif;
   font-size: 1.5rem;
   border: none;
-  background-color: #FF6E50;
+  background-color: #ff6e50;
   padding: 0.5rem 2rem;
   border-radius: 1.5rem;
   color: white;

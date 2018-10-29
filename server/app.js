@@ -153,7 +153,7 @@ io.on("connection", clientSocket => {
   });
 });
 
-schedule.scheduleJob("*/1 * * * *", () => {
+schedule.scheduleJob("*/15 * * * *", () => {
   // This cleaning job is run every 15 minutes
   // If a room hasn't been used in an hour, delete
   RoomManager.deleteOldRooms(io);

@@ -145,9 +145,9 @@ class RoomSelection extends Component {
     this.setState({ newName: "" });
   };
 
-  componentDidMount(){
+  componentDidMount() {
     appStore.refreshRooms();
-  };
+  }
 
   renderRoomList = () => {
     return appStore.rooms.map(r => (

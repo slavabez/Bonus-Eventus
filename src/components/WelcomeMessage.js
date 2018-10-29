@@ -13,7 +13,7 @@ const Content = styled.div`
   text-align: center;
   font-size: 2rem;
   color: #05927b;
-  
+
   a {
     width: fit-content;
     align-self: center;

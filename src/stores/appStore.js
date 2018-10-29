@@ -89,7 +89,6 @@ appStore.socket.on("connect", () => {
 });
 
 appStore.socket.on("room.allRooms", rooms => {
-  console.log(`Recieved a new list of rooms`, rooms);
   appStore.rooms = rooms;
 });
 
