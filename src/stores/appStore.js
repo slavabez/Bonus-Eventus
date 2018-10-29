@@ -53,10 +53,6 @@ const appStore = store({
   },
   sendRoll: message => {
     appStore.socket.emit("roll", message);
-  },
-  reconnect: () => {
-    appStore.socket.disconnect();
-    appStore.socket.connect();
   }
 });
 
@@ -93,6 +89,7 @@ appStore.socket.on("connect", () => {
 });
 
 appStore.socket.on("room.allRooms", rooms => {
+  console.log(`Recieved a new list of rooms`, rooms);
   appStore.rooms = rooms;
 });
 

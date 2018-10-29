@@ -60,7 +60,7 @@ class RoomManager {
     }
   }
 
-  removeFromAllRooms(id){
+  removeFromAllRooms(id) {
     // Cycle through all rooms, remove this user from all
     this.rooms.forEach(r => {
       r.users.forEach(u => {
@@ -77,9 +77,8 @@ class RoomManager {
     this.rooms.forEach(r => {
       const users = Array.from(r.users.values());
       // console.log("users in each room", users);
-      if (users.length > 0)
-        io.in(r.name).emit("room.players", users);
-        /*console.log(
+      if (users.length > 0) io.in(r.name).emit("room.players", users);
+      /*console.log(
           `--- Room ${r.name} has ${
             users.length
           } connected clients, emitting to that room ---`
@@ -87,19 +86,28 @@ class RoomManager {
     });
   }
 
-  deleteOldRooms() {
+  emitRoomInfoToClients(io) {
+    io.emit("room.allRooms", this.getRooms());
+  }
+
+  deleteOldRooms(io) {
     try {
-      let count = 0;
+      let hasDeleted = false;
       for (const key of this.rooms.keys()) {
         // First, check if there are any messages
         if (this.rooms.get(key).history.length < 1) {
           // no messages, if old - delete
           if (
-            this.rooms.get(key).createdAt.getTime() + 1000 * 60 * 60 <
+            this.rooms.get(key).createdAt.getTime() + 1000 * 60 <
             new Date().getTime()
           ) {
-            count++;
+            console.log(
+              `Deleting room "${
+                this.rooms.get(key).name
+              }" because there were no messages and it's more than an hour old...`
+            );
             this.rooms.delete(key);
+            hasDeleted = true;
           }
         } else {
           // There are messages, delete ones with newest messages being older than 1 hour
@@ -107,14 +115,20 @@ class RoomManager {
             .get(key)
             .history.some(
               message =>
-                message.createdAt.getTime() + 1000 * 60 * 60 <
-                new Date().getTime()
+                message.createdAt.getTime() + 1000 * 60 < new Date().getTime()
             );
-          if (isOld) this.rooms.delete(key);
-          count++;
+          if (isOld) {
+            console.log(
+              `Deleting room "${
+                this.rooms.get(key).name
+              }" because newest roll was older than one hour...`
+            );
+            this.rooms.delete(key);
+            hasDeleted = true;
+          }
         }
       }
-      console.log(`Deleted ${count} rooms for inactivity`);
+      if (hasDeleted) this.emitRoomInfoToClients(io);
     } catch (e) {
       console.error("Failed to cleanup old rooms", e);
     }

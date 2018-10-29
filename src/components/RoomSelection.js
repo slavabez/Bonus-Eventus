@@ -136,12 +136,17 @@ class RoomSelection extends Component {
     newName: ""
   };
   handleRoomJoin = roomName => {
+    // Check the room still exists
     appStore.joinRoom(roomName);
   };
   handleRoomCreate = e => {
     e.preventDefault();
     appStore.createNewRoom(this.state.newName);
     this.setState({ newName: "" });
+  };
+
+  componentDidMount(){
+    appStore.refreshRooms();
   };
 
   renderRoomList = () => {

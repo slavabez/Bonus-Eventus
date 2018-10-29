@@ -333,6 +333,7 @@ class RoomView extends Component {
 
   render() {
     if (!appStore.inRoom) return <Redirect to="/profile" />;
+    // If inRoom but server says there are no players in the room - the room has probably been deleted, redirect to room selection and query for rooms again
     return (
       <Wrapper>
         <LeftPane>
