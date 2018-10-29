@@ -1,8 +1,10 @@
 # Bonus Eventus - multiplayer dice rooms
 
+##### This repo, except for the last commit adding this text is the repository as it was deployed to Heroku for the Node Knockout 2018
+
 This project was made for the Node Knockout 2018 Hackathon in just under 48 hours.
 
-See the demo here: [https://safe-gorge-43900.herokuapp.com/](https://safe-gorge-43900.herokuapp.com/)
+See the demo here: [https://bonus-eventus.herokuapp.com](https://bonus-eventus.herokuapp.com)
 
 ### How to use
 
