@@ -1,3 +1,4 @@
+const path = require("path");
 const express = require("express");
 const helmet = require("helmet");
 const schedule = require("node-schedule");
@@ -20,7 +21,7 @@ app.use(express.static("build"));
 
 // If no explicit matches were found, serve index.html
 app.get("*", function(req, res) {
-  res.sendFile(__dirname + "/build/index.html");
+  res.sendFile(path.join(__dirname + "/../build/index.html"));
 });
 
 app.use(notFound).use(errors);
@@ -140,7 +141,7 @@ io.on("connection", clientSocket => {
     }
   });
 
-  clientSocket.on("disconnect", reason => {
+  clientSocket.on("disconnect", () => {
     // Client disconnected, make sure they leave rooms properly
     // console.log(`${clientSocket.id} disconnected`, reason);
     const user = ClientManager.findClientBySocketId(clientSocket.id);
