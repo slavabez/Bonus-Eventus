@@ -1,7 +1,17 @@
 # echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
 sudo: required
 
-language: node.js
+language: node_js
+
+node_js:
+  - node
+  - lts/*
+
+install:
+  - yarn install
+
+script:
+  - yarn run test
 
 services:
   - docker
