@@ -13,6 +13,8 @@ install:
 script:
   - yarn run test
 
+cache: yarn
+
 services:
   - docker
 
