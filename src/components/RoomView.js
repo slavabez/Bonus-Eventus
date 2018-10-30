@@ -74,6 +74,10 @@ const Name = styled.span`
 const HistoryWrapper = styled.div`
   height: calc(100% - 1rem);
   padding-top: 1rem;
+  h6 {
+    color: transparent;
+    margin: 0;
+  }
 `;
 const RollMessage = styled.div`
   display: flex;
@@ -369,11 +373,13 @@ class RoomView extends Component {
         <History>
           <HistoryWrapper>
             {this.renderRollHistory()}
-            <div
+            <h6
               ref={el => {
                 this.el = el;
               }}
-            />
+            >
+              ...
+            </h6>
           </HistoryWrapper>
         </History>
       </Wrapper>
