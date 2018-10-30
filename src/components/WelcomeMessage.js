@@ -37,7 +37,7 @@ const WelcomeMessage = () => {
         <h1>Welcome to Bonus Eventus</h1>
         <p>
           Bonus Eventus is an online dice room. You can create room and a simple
-          profile, invite your friends and roll various dice together.{" "}
+          profile, invite your friends and roll various dice together..{" "}
         </p>
         <Link to="/profile/">Let's roll</Link>
       </Content>
