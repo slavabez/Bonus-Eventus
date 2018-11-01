@@ -3,6 +3,12 @@
   "version": "0.1.0",
   "description": "Repo for be-dice.com",
   "main": "index.js",
+  "scripts": {
+    "dev:server": "nodemon",
+    "server:debug": "node --inspect=5858 -r ts-node/register server/index.ts",
+    "test:server": "jest",
+    "test:server:watch": "jest --watch"
+  },
   "repository": "git@github.com:slavabez/Bonus-Eventus.git",
   "author": "Slava Bezgachev <bezgachev@gmail.com>",
   "license": "MIT",
@@ -16,8 +22,31 @@
   "devDependencies": {
     "@types/express": "^4.16.0",
     "@types/jest": "^23.3.9",
+    "@types/node": "^10.12.1",
     "@types/socket.io": "^1.4.38",
     "@types/winston": "^2.4.4",
-    "ts-jest": "^23.10.4"
+    "jest": "^23.6.0",
+    "nodemon": "^1.18.5",
+    "ts-jest": "^23.10.4",
+    "typescript": "^3.1.5"
+  },
+  "jest": {
+    "transform": {
+      ".(ts)": "ts-jest"
+    },
+    "testMatch": [
+      "<rootDir>/server/**/__tests__/**/*.{ts}",
+      "<rootDir>/server/**/?(*.)(test).{ts}"
+    ],
+    "moduleFileExtensions": [
+      "ts",
+      "js",
+      "json"
+    ],
+    "globals": {
+      "ts-jest": {
+        "diagnostics": false
+      }
+    }
   }
 }
