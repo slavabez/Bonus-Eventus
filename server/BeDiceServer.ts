@@ -4,6 +4,9 @@ import * as express from "express";
 import * as socketIO from "socket.io";
 import { AddressInfo } from "net";
 
+// Event handlers
+import { handlePing } from "./handlers/connection";
+
 class BeDiceServer {
   private readonly app: express.Application;
   private readonly server: Server;
@@ -22,10 +25,12 @@ class BeDiceServer {
       console.log(`Be-Dice Server listening on port ${this.getPort()}`);
     });
     this.address = this.server.address();
-    this.io.on("connect", (socket: SocketIO.Socket) => {
-      console.log(`New user connected with socket ID ${socket.id};`);
+    this.io.on("connection", (socket: SocketIO.Socket) => {
       // New user connected, handle
-      this.handleNewSocketConnected(socket);
+      // this.addEventListeners(socket);
+      socket.on("ping", () => {
+        socket.emit("pong", { message: "asd" })
+      });
 
       socket.on("disconnect", () => {
         // Disconnected, handle
@@ -51,11 +56,9 @@ class BeDiceServer {
     this.server.close();
   }
 
-  handleNewSocketConnected(socket: SocketIO.Socket) {
+  addEventListeners(socket: SocketIO.Socket) {
     // Register all events here
-    socket.on("ping", () => {
-      socket.emit("pong", () => ({ message: "You bet!" }));
-    });
+    socket.on("ping", handlePing);
   }
 }
 

@@ -39,8 +39,7 @@ describe("Basic connectivity tests", () => {
     done();
   });
 
-  test("Can communicate using rudimentary emits", done => {
-    console.log(`Setting up listener`);
+  test("Can communicate using direct emits from the server", done => {
     clientSocket.on("Test emit", (data: any) => {
       expect(data.test).toBe("Test");
       done();
@@ -49,11 +48,15 @@ describe("Basic connectivity tests", () => {
     server.io.emit("Test emit", { test: "Test" });
   });
 
-  test.only("Can emit a ping and receive a pong in response", done => {
-    clientSocket.on("pong", () => {
+  test("Can emit a ping and receive a pong in response", done => {
+    clientSocket.on("pong", (data: any) => {
+      expect(data.message).toBe("You bet!");
       done();
     });
 
-    clientSocket.emit("ping", () => {});
+    setTimeout(() => {
+      // Put your server side expect() here
+      clientSocket.emit("ping", { message: "Are you there?" });
+    }, 50);
   });
 });
