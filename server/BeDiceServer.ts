@@ -7,7 +7,7 @@ import { AddressInfo } from "net";
 class BeDiceServer {
   private readonly app: express.Application;
   private readonly server: Server;
-  private readonly io: SocketIO.Server;
+  public readonly io: SocketIO.Server;
 
   public address?: string | AddressInfo;
 
@@ -19,10 +19,11 @@ class BeDiceServer {
 
   listen(port?: number): void {
     this.server.listen(port, () => {
-      console.log(`Be-Dice Server listening on port ${port}`);
+      console.log(`Be-Dice Server listening on port ${this.getPort()}`);
     });
-
+    this.address = this.server.address();
     this.io.on("connect", (socket: SocketIO.Socket) => {
+      console.log(`New user connected with socket ID ${socket.id};`);
       // New user connected, handle
       this.handleNewSocketConnected(socket);
 
@@ -40,12 +41,13 @@ class BeDiceServer {
     )
       return this.address.address;
   }
+
   getPort() {
     if (this.address && typeof this.address !== "string" && this.address.port)
       return this.address.port;
   }
 
-  close(): void {
+  stop(): void {
     this.server.close();
   }
 

@@ -2,22 +2,26 @@ import "jest";
 import BeDiceServer from "../BeDiceServer";
 import * as ioClient from "socket.io-client";
 
+jest.setTimeout(1000);
+
 describe("Basic connectivity tests", () => {
   let server: BeDiceServer;
   let clientSocket: SocketIOClient.Socket;
 
-  beforeAll(() => {
+  beforeAll(done => {
     server = new BeDiceServer();
     server.listen();
+    done();
   });
 
   afterAll(() => {
-    server.close();
+    server.stop();
   });
 
   beforeEach(done => {
+    const connString = `http://[${server.getAddress()}]:${server.getPort()}`;
     clientSocket = ioClient.connect(
-      `http://[${server.getAddress()}]:${server.getPort()}`,
+      connString,
       {
         reconnectionDelay: 0,
         forceNew: true,
@@ -35,16 +39,21 @@ describe("Basic connectivity tests", () => {
     done();
   });
 
-  test("Can emit a ping and receive a pong in response", done => {
-    clientSocket = ioClient.connect(
-      `http://[${server.getAddress()}]:${server.getPort()}`
-    );
-
-    clientSocket.on("connect", () => {
-      clientSocket.emit("ping");
+  test("Can communicate using rudimentary emits", done => {
+    console.log(`Setting up listener`);
+    clientSocket.on("Test emit", (data: any) => {
+      expect(data.test).toBe("Test");
+      done();
     });
+
+    server.io.emit("Test emit", { test: "Test" });
+  });
+
+  test.only("Can emit a ping and receive a pong in response", done => {
     clientSocket.on("pong", () => {
       done();
     });
+
+    clientSocket.emit("ping", () => {});
   });
 });
