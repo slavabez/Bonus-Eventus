@@ -54,9 +54,6 @@ describe("Basic connectivity tests", () => {
       done();
     });
 
-    setTimeout(() => {
-      // Put your server side expect() here
-      clientSocket.emit("ping", { message: "Are you there?" });
-    }, 50);
+    clientSocket.emit("ping", { message: "Are you there?" });
   });
 });

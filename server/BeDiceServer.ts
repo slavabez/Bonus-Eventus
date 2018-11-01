@@ -27,10 +27,7 @@ class BeDiceServer {
     this.address = this.server.address();
     this.io.on("connection", (socket: SocketIO.Socket) => {
       // New user connected, handle
-      // this.addEventListeners(socket);
-      socket.on("ping", () => {
-        socket.emit("pong", { message: "asd" })
-      });
+      this.addEventListeners(socket);
 
       socket.on("disconnect", () => {
         // Disconnected, handle
