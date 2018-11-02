@@ -14,7 +14,7 @@ import { handlePing } from "./handlers/connection";
 class BeDiceServer {
   private readonly app: express.Application;
   private readonly server: Server;
-  public readonly io: SocketIO.Server;
+  public readonly io: socketIO.Server;
 
   public address?: string | AddressInfo;
 
@@ -47,7 +47,7 @@ class BeDiceServer {
     this.app.use(express.static("client/build"));
     this.app.get("*", (req: express.Request, res: express.Response) => {
       // If the route wasn't matched with static, route to index.js
-      res.sendFile(path.join(__dirname + "../client/build/index.html"))
+      res.sendFile(path.join(__dirname + "../client/build/index.html"));
     });
 
     // Add basic error handling
@@ -73,7 +73,7 @@ class BeDiceServer {
     this.io.close();
   }
 
-  addEventListeners(socket: SocketIO.Socket) {
+  addEventListeners(socket: socketIO.Socket) {
     // Register all events here
     socket.on("server.ping", handlePing(socket));
   }
