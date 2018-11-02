@@ -2,7 +2,7 @@ import "jest";
 import BeDiceServer from "../BeDiceServer";
 import * as ioClient from "socket.io-client";
 
-jest.setTimeout(1000);
+jest.setTimeout(10000);
 
 describe("Basic connectivity tests", () => {
   let server: BeDiceServer;
@@ -20,11 +20,10 @@ describe("Basic connectivity tests", () => {
 
   beforeEach(done => {
     const connString = `http://[${server.getAddress()}]:${server.getPort()}`;
+
     clientSocket = ioClient.connect(
       connString,
       {
-        reconnectionDelay: 0,
-        forceNew: true,
         transports: ["websocket"]
       }
     );
@@ -35,8 +34,26 @@ describe("Basic connectivity tests", () => {
   });
 
   afterEach(done => {
-    if (clientSocket.connected) clientSocket.disconnect();
+    if (clientSocket.connected) {
+      clientSocket.disconnect();
+    }
+
     done();
+  });
+
+  test("Can emit a ping and receive a pong in response", done => {
+    clientSocket.on("pong", (data: any) => {
+      expect(data.message).toBe("You bet!");
+      done();
+    });
+
+    server.io.on("ping", () => {
+      server.io.emit("pong", { message: "yo" });
+    });
+
+    setTimeout(() => {
+      clientSocket.emit("ping", { message: "Are you there?" });
+    }, 500);
   });
 
   test("Can communicate using direct emits from the server", done => {
@@ -46,14 +63,5 @@ describe("Basic connectivity tests", () => {
     });
 
     server.io.emit("Test emit", { test: "Test" });
-  });
-
-  test("Can emit a ping and receive a pong in response", done => {
-    clientSocket.on("pong", (data: any) => {
-      expect(data.message).toBe("You bet!");
-      done();
-    });
-
-    clientSocket.emit("ping", { message: "Are you there?" });
   });
 });
