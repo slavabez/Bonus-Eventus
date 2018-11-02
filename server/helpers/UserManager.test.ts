@@ -68,7 +68,47 @@ describe("UserManager Unit Tests", () => {
         um.registerNewUser(u);
       });
 
+      const socketId = users[3].socketId;
 
+      const user = um.findUserBySocketId(socketId);
+      expect(user).toEqual(users[3]);
+    });
+
+    test("returns undefined when not found", () => {
+      const um = new UserManager();
+      const users = FakeGenerator.fakeUsers();
+
+      users.forEach(u => {
+        um.registerNewUser(u);
+      });
+
+      const socketId = "WrongSocketId";
+
+      const user = um.findUserBySocketId(socketId);
+      expect(user).toBe(undefined);
+    });
+  });
+
+  describe("deleteUser", () => {
+    test("deletes a user properly", () => {
+      const um = new UserManager();
+      const users = FakeGenerator.fakeUsers();
+
+      users.forEach(u => {
+        um.registerNewUser(u);
+      });
+
+      const id = users[1].id;
+
+      um.deleteUser(id);
+      expect(um.allUsers.has(id)).toBe(false);
+      expect(um.allUsers.size).toBe(4);
+    });
+
+    test("doesn't crash when deleting a non-existent user", () => {
+      const um = new UserManager();
+      um.deleteUser("someid");
+      // If we got this far, we're good
     });
   });
 });
