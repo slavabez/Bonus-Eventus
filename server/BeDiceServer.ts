@@ -29,11 +29,11 @@ class BeDiceServer {
       // New user connected, handle
       // this.addEventListeners(socket);
 
-      socket.on("ping", (data: any) => {
+      socket.on("Ping", (data: any) => {
         if (data.message === "Are you there?") {
-          socket.emit("pong", { message: "You bet!" });
+          socket.emit("Pong", { message: "You bet!" });
         } else {
-          socket.emit("pong", { message: "New phone who dis?" });
+          socket.emit("Pong", { message: "New phone who dis?" });
         }
       });
 

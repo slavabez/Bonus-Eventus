@@ -19,7 +19,7 @@ describe("Basic connectivity tests", () => {
   });
 
   beforeEach(done => {
-    const connString = `http://[${server.getAddress()}]:${server.getPort()}`;
+    const connString = `http://localhost:${server.getPort()}`;
 
     clientSocket = ioClient.connect(
       connString,
@@ -42,17 +42,17 @@ describe("Basic connectivity tests", () => {
   });
 
   test("Can emit a ping and receive a pong in response", done => {
-    clientSocket.on("pong", (data: any) => {
+    clientSocket.on("Pong", (data: any) => {
       expect(data.message).toBe("You bet!");
       done();
     });
 
-    server.io.on("ping", () => {
-      server.io.emit("pong", { message: "yo" });
+    server.io.on("Ping", () => {
+      server.io.emit("Pong", { message: "yo" });
     });
 
     setTimeout(() => {
-      clientSocket.emit("ping", { message: "Are you there?" });
+      clientSocket.emit("Ping", { message: "Are you there?" });
     }, 500);
   });
 
