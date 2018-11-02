@@ -21,15 +21,15 @@ class App extends Component {
     });
 
     socket.on("connect", () => {
+      console.log(`Connected to server, id ${socket.id}`);
       connected = performance.now();
+
+      socket.emit("server.ping", { message: "Are you there?" })
+
       // socket.emit("Ping", { message: "Are you here?" });
     });
 
-    setTimeout(() => {
-      socket.emit("Ping", { message: "Are you there?" })
-    }, 500);
-
-    socket.on("Pong", message => {
+    socket.on("server.pong", message => {
       received = performance.now();
       this.setState({
         message: message.message,

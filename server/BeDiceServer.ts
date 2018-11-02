@@ -27,19 +27,10 @@ class BeDiceServer {
     this.address = this.server.address();
     this.io.on("connection", (socket: SocketIO.Socket) => {
       // New user connected, handle
-      // this.addEventListeners(socket);
-
-      socket.on("Ping", (data: any) => {
-        if (data.message === "Are you there?") {
-          socket.emit("Pong", { message: "You bet!" });
-        } else {
-          socket.emit("Pong", { message: "New phone who dis?" });
-        }
-      });
+      this.addEventListeners(socket);
 
       socket.on("disconnect", () => {
         // Disconnected, handle
-        console.log('ayyy');
       });
     });
   }
@@ -65,8 +56,9 @@ class BeDiceServer {
 
   addEventListeners(socket: SocketIO.Socket) {
     // Register all events here
-    // socket.on("ping", handlePing);
+    socket.on("server.ping", handlePing(socket));
   }
+
 }
 
 export default BeDiceServer;

@@ -1,15 +1,12 @@
 import * as SocketIO from "socket.io";
 
 export function handlePing(socket: SocketIO.Socket) {
-  return function(data: any, cb: any) {
+  return function(data: any) {
+    console.log`Received a ping request...`;
     if (data.message === "Are you there?") {
-      socket.emit("pong", { message: "You bet!" });
+      socket.emit("server.pong", { message: "You bet!" });
     } else {
-      socket.emit("pong", { message: "New phone who dis?" });
+      socket.emit("server.pong", { message: "New phone who dis?" });
     }
-
-    cb(() => {
-      console.log(`Got it, boss`);
-    });
   };
 }

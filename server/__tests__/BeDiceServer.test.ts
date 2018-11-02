@@ -2,7 +2,7 @@ import "jest";
 import BeDiceServer from "../BeDiceServer";
 import * as ioClient from "socket.io-client";
 
-jest.setTimeout(10000);
+jest.setTimeout(1000);
 
 describe("Basic connectivity tests", () => {
   let server: BeDiceServer;
@@ -42,18 +42,12 @@ describe("Basic connectivity tests", () => {
   });
 
   test("Can emit a ping and receive a pong in response", done => {
-    clientSocket.on("Pong", (data: any) => {
+    clientSocket.on("server.pong", (data: any) => {
       expect(data.message).toBe("You bet!");
       done();
     });
 
-    server.io.on("Ping", () => {
-      server.io.emit("Pong", { message: "yo" });
-    });
-
-    setTimeout(() => {
-      clientSocket.emit("Ping", { message: "Are you there?" });
-    }, 500);
+    clientSocket.emit("server.ping", { message: "Are you there?" });
   });
 
   test("Can communicate using direct emits from the server", done => {
