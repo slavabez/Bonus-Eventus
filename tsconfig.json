@@ -48,5 +48,5 @@
     ] /* Type declaration files to be included in compilation. */,
 
   },
-  "files": [ "./index.ts" ]
+  "files": [ "./server/index.ts" ]
 }
