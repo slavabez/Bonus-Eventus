@@ -1,7 +1,9 @@
 import "jest";
 import SessionManager from "./SessionManager";
+import FakeGenerator from "./FakeGenerator";
+import { User } from "./UserManager";
 
-describe("Encryption and decryption", function() {
+describe("Encryption and decryption unit tests", function() {
   let secretCode = "I'm a secret string";
   let encryptedCode: string;
 
@@ -60,13 +62,56 @@ describe("Encryption and decryption", function() {
     const joined2 = [parts1[0], parts2[1]].join(":");
 
     // Expect both promises to reject with specific message
-    SessionManager.decrypt(joined1, "salty").catch(e =>
-      expect(e).toMatch("Error decrypting, hash is likely corrupted")
-    );
-    SessionManager.decrypt(joined2, "salty").catch(e =>
-      expect(e).toMatch("Error decrypting, hash is likely corrupted")
-    );
+    try {
+      await SessionManager.decrypt(joined1, "salty");
+    } catch (e) {
+      expect(e).toBe("Error decrypting, hash is likely corrupted");
+    }
+    try {
+      await SessionManager.decrypt(joined2, "salty");
+    } catch (e) {
+      expect(e).toBe("Error decrypting, hash is likely corrupted");
+    }
+  });
+});
 
+describe("User serialise() and deserialise()", () => {
+  test("serialise() turns a user into a string", async () => {
+    const user = FakeGenerator.fakeUser();
+    const encrypted = await SessionManager.serialiseUser(user);
+    expect(user).not.toEqual(encrypted);
+    expect(typeof encrypted).toBe("string");
+    // Max size for a cookie - around 4000 bytes, make sure it's less
+    expect(Buffer.byteLength(encrypted, "utf8")).toBeLessThan(4000);
   });
 
+  test("serialising largest possible user can fit into 4000 bytes", async () => {
+    const bigBoy = new User({
+      name: "MyNameIsSoSoSoS",
+      avatar:
+        "img/avatar/jpeg/img/avatar/jpeg/img/avatar/jpeg/img/avatar/jpeg/img/avatar/jpeg/img/avatar/jpeg/img/avatar/jpeg/img/avatar/jpeg/img/avatar/jpeg/img/avatar/jpeg/img/avatar/jpeg/img/avatar/jpeg/img/avatar/jpeg/img/avatar/jpeg/img/avatar/jpeg/img/avatar/jpeg",
+      color: "1234567",
+      socketId: "aaaaaaaaaaaaaaaaaaaaaaaaa"
+    });
+    const encrypted = await SessionManager.serialiseUser(bigBoy);
+    expect(Buffer.byteLength(encrypted, "utf8")).toBeLessThan(4000);
+  });
+
+  test("serialise() then deserialise() works", async () => {
+    const user = FakeGenerator.fakeUser();
+    const encrypted = await SessionManager.serialiseUser(user);
+    const deserialised = await SessionManager.deserialiseUser(encrypted);
+
+    expect(user).toEqual(deserialised);
+  });
+
+  test("deserialise() throws relevant error if given badly formatted data", async () => {
+    expect.assertions(1);
+    const bogusData = "asdasdasdasdasdasdasdasdasd";
+    try {
+      await SessionManager.deserialiseUser(bogusData);
+    } catch (e) {
+      expect(e).toBe("Error de-serialising the user");
+    }
+  });
 });

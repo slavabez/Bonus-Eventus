@@ -10,6 +10,7 @@ import errorMiddleware from "./handlers/errorMiddleware";
 
 // Event handlers
 import { handlePing } from "./handlers/connection";
+import UserManager, {User} from "./helpers/UserManager";
 
 class BeDiceServer {
   private readonly app: express.Application;
@@ -17,12 +18,14 @@ class BeDiceServer {
   public readonly io: socketIO.Server;
 
   public address?: string | AddressInfo;
+  public um: UserManager;
 
   constructor() {
     this.app = express();
     this.server = createServer(this.app);
     this.io = socketIO(this.server);
     this.setupExpress();
+    this.um = new UserManager();
   }
 
   listen(port?: number): void {
@@ -76,6 +79,10 @@ class BeDiceServer {
   addEventListeners(socket: socketIO.Socket) {
     // Register all events here
     socket.on("server.ping", handlePing(socket));
+
+    // Registration stuff
+    socket.on("register.new", this.um.handleNewUserRegistration);
+    socket.on("register.restore", this.um.handleRestoreUser);
   }
 }
 
