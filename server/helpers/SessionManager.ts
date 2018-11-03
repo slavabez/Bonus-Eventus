@@ -1,14 +1,12 @@
 import * as crypto from "crypto";
 
-const sessionKey: string = process.env.SESSION_KEY || "some hash";
-
 export default class SessionManager {
-  public static genSalt(salt: string | undefined): Buffer {
+  public static genSalt(salt?: string): Buffer {
     const hashedSalt = crypto.createHash("sha1");
     if (salt) {
       hashedSalt.update(salt);
     } else if (process.env.SESSION_KEY) {
-      hashedSalt.update(sessionKey);
+      hashedSalt.update(process.env.SESSION_KEY);
     } else {
       // No salt set, use nothing
       hashedSalt.update("");
@@ -17,13 +15,14 @@ export default class SessionManager {
     return hashedSalt.digest().slice(0, 16);
   }
 
-  public static encrypt(socketId: string): Promise<string> {
+  public static encrypt(secret: string, salt?: string): Promise<string> {
     return new Promise((resolve, reject) => {
       try {
+        // Create a random initia
         let iv = crypto.randomBytes(16);
-        const salt = SessionManager.genSalt(sessionKey);
-        const key = crypto.createCipheriv("aes-128-cbc", salt, iv);
-        let encrypted = key.update(socketId);
+        const hashedSalt = SessionManager.genSalt(salt);
+        const key = crypto.createCipheriv("aes-128-cbc", hashedSalt, iv);
+        let encrypted = key.update(secret);
         encrypted = Buffer.concat([encrypted, key.final()]);
 
         resolve(`${iv.toString("hex")}:${encrypted.toString("hex")}`);
@@ -33,7 +32,7 @@ export default class SessionManager {
     });
   }
 
-  public static decrypt(secret: string): Promise<string> {
+  public static decrypt(secret: string, salt?: string): Promise<string> {
     return new Promise((resolve, reject) => {
       try {
         const textParts = secret.split(":");
@@ -42,15 +41,15 @@ export default class SessionManager {
         }
         const iv = Buffer.from(textParts[0], "hex");
         const text = Buffer.from(textParts[1], "hex");
-        const salt = SessionManager.genSalt(sessionKey);
-        const decipher = crypto.createDecipheriv("aes-128-cbc", salt, iv);
+        const hashedSalt = SessionManager.genSalt(salt);
+        const decipher = crypto.createDecipheriv("aes-128-cbc", hashedSalt, iv);
         let decrypted = decipher.update(text);
 
         decrypted = Buffer.concat([decrypted, decipher.final()]);
 
         resolve(decrypted.toString());
       } catch (e) {
-        reject(e);
+        reject("Error decrypting, hash is likely corrupted");
       }
     });
   }
