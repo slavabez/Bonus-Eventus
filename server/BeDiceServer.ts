@@ -30,7 +30,7 @@ class BeDiceServer {
       console.log(`Be-Dice Server listening on port ${this.getPort()}`);
     });
     this.address = this.server.address();
-    this.io.on("connection", (socket: SocketIO.Socket) => {
+    this.io.on("connection", (socket: socketIO.Socket) => {
       // New user connected, handle
       this.addEventListeners(socket);
 
