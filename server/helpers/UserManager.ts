@@ -112,5 +112,13 @@ export default class UserManager {
     };
   }
 
-  handleClientDisconnect(socket: socketIO.Socket) {}
+  handleClientDisconnect(socket: socketIO.Socket) {
+    return async () => {
+      // Client has disconnected, remove from users
+      const user = this.findUserBySocketId(socket.id);
+      if (user && this.allUsers.has(user.id)) {
+        this.allUsers.delete(user.id);
+      }
+    };
+  }
 }
