@@ -1,4 +1,5 @@
 import * as uniqid from "uniqid";
+import * as socketIO from "socket.io";
 
 export interface UserProps {
   avatar: string;
@@ -73,5 +74,12 @@ export default class UserManager {
     if (this.allUsers.has(id)) {
       this.allUsers.delete(id);
     }
+  }
+
+  handleNewUserRegisttration(socket: socketIO.Socket) {
+    return (data: any) => {
+      // Add socket ID to the data before creating a user
+      data.socketId = socket.id;
+    };
   }
 }
