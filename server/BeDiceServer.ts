@@ -81,8 +81,8 @@ class BeDiceServer {
     socket.on("server.ping", handlePing(socket));
 
     // Registration stuff
-    socket.on("register.new", this.um.handleNewUserRegistration);
-    socket.on("register.restore", this.um.handleRestoreUser);
+    socket.on("register.new", this.um.handleNewUserRegistration(socket));
+    socket.on("register.restore", this.um.handleRestoreUser(socket));
   }
 }
 

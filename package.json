@@ -58,6 +58,10 @@
       "js",
       "json"
     ],
+    "reporters": [
+      "default",
+      "jest-junit"
+    ],
     "globals": {
       "ts-jest": {
         "diagnostics": false

@@ -47,11 +47,14 @@ export default class UserManager {
   registerNewUser(props: UserProps): null | User {
     // Make sure no user with such ID is already registered
     if (!props.id) {
-      return null;
+      // No id passed - generate and ID
+      props.id = uniqid();
     }
     if (this.allUsers.has(props.id)) {
       return null;
     }
+    // Make sure all fields exist (avatar, color, name)
+    if (!props.avatar || !props.color || !props.name) return null;
     const u = new User(props);
     this.allUsers.set(props.id, u);
     return u;
@@ -88,8 +91,8 @@ export default class UserManager {
         return;
       }
       // Encrypt the session, send to user to save as cookie
-      const session = SessionManager.serialiseUser(newUser);
-      socket.emit("register.success", { session });
+      const session = await SessionManager.serialiseUser(newUser);
+      socket.emit("register.new.success", { session });
     };
   }
 
