@@ -1,7 +1,7 @@
 import "jest";
 import BeDiceServer from "../BeDiceServer";
 import * as ioClient from "socket.io-client";
-import RoomManager from "../helpers/RoomManager";
+import RoomManager, { Room } from "../helpers/RoomManager";
 import FakeGenerator from "../helpers/FakeGenerator";
 
 describe("Server-client integration tests", () => {
@@ -48,17 +48,42 @@ describe("Server-client integration tests", () => {
   });
   //#endregion
 
-  test("Both clients connect to the server and can ping", () => {
+  test("Both clients connect to the server and can ping", () => {});
 
-  });
-
-  test("broadcastRoomList sends a list of all rooms to all clients", () => {
+  test("broadcastRoomList sends a list of all rooms to all clients", done => {
+    expect.assertions(numOfClients * 3);
     // Create some sample rooms
     const rm = new RoomManager();
     rm.createNewRoom("room-1");
     rm.createNewRoom("room-2");
     rm.createNewRoom("room-3");
 
-    const users = FakeGenerator.fakeUsers(10);
+    const users1 = FakeGenerator.fakeUsers(5);
+    const users2 = FakeGenerator.fakeUsers(2);
+    const users3 = FakeGenerator.fakeUsers(10);
+
+    users1.forEach(u => rm.addUserToRoom(u, "room-1"));
+    users2.forEach(u => rm.addUserToRoom(u, "room-2"));
+    users3.forEach(u => rm.addUserToRoom(u, "room-3"));
+
+    let counter = 0;
+    // Room 1 should have 5 fake users, room 2 - 2, room 3 - 10
+    const receivedEmit = (list: Room[]) => {
+      // Every time assert we have the correct numbers
+      expect(list[0].numOfUsers).toBe(5);
+      expect(list[1].numOfUsers).toBe(2);
+      expect(list[2].numOfUsers).toBe(10);
+
+      counter++;
+      if (counter >= numOfClients) {
+        done();
+      }
+    };
+
+    clients.forEach(c => {
+      c.on("room.list", receivedEmit);
+    });
+
+    rm.broadcastRoomList(server.io);
   });
 });

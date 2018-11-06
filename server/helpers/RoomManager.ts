@@ -34,6 +34,7 @@ export class Room {
   public users: Map<string, User>;
   public history: RollMessage[];
   public createdAt: Date;
+  public numOfUsers?: number;
 
   constructor(name: string) {
     this.name = name;
@@ -55,6 +56,14 @@ export default class RoomManager {
     const room = new Room(name);
     this.allRooms.set(room.name, room);
     return room;
+  }
+
+  getRoomList(): Room[] {
+    const list = Array.from(this.allRooms.values());
+    list.forEach(li => {
+      li.numOfUsers = li.users.size
+    });
+    return list;
   }
 
   addUserToRoom(user: User, roomName: string): boolean {
@@ -107,7 +116,7 @@ export default class RoomManager {
    * @param io
    */
   broadcastRoomList(io: SocketIO.Server): void {
-    io.emit("room.list", Array.from(this.allRooms.values()));
+    io.emit("room.list", this.getRoomList());
   }
 
   postRollToRoom(roll: RollMessage, roomName: string): boolean {
