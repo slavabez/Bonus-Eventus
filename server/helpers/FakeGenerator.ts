@@ -34,4 +34,5 @@ export default class FakeGenerator {
   static fakeRoom(): Room {
     return new Room(faker.internet.domainName());
   }
+
 }
