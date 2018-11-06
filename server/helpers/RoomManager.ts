@@ -109,6 +109,17 @@ export default class RoomManager {
     io.emit("room.list", Array.from(this.allRooms.values()));
   }
 
+  postRollToRoom(roll: RollMessage, roomName: string): boolean {
+    if (!this.allRooms.has(roomName)) return false;
+    const room = this.allRooms.get(roomName);
+    // 20 messages allowed in history max, delete if more
+    if (room!.history.length > 19){
+      room!.history = room!.history.slice(room!.history.length - 19);
+    }
+    room!.history.push(roll);
+    return true;
+  }
+
   deleteOldRooms(io: SocketIO.Server): void {
     try {
       const namesToDelete: string[] = [];
