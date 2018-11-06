@@ -64,10 +64,10 @@ export default class RoomManager {
     return true;
   }
 
-  removeUserFromRoom(userId: string, roomName: string): boolean {
+  removeUserFromRoom(user: User, roomName: string): boolean {
     if (!this.allRooms.has(roomName)) return false;
-    if (!this.allRooms.get(roomName)!.users.has(userId)) return false;
-    this.allRooms.get(roomName)!.users.delete(userId);
+    if (!this.allRooms.get(roomName)!.users.has(user.id)) return false;
+    this.allRooms.get(roomName)!.users.delete(user.id);
     return true;
   }
 
@@ -79,18 +79,19 @@ export default class RoomManager {
 
   /**
    * Looks through all rooms and deletes a user if found. Returns true if found and deleted, false if not found in any room
-   * @param userId
+   * @param user
    */
-  removeUserFromAllRooms(userId: string): boolean {
+  removeUserFromAllRooms(user: User): boolean {
+    let hasDeleted = false;
     this.allRooms.forEach(r => {
       r.users.forEach(u => {
-        if (u.id === userId) {
-          r.users.delete(userId);
-          return true;
+        if (u.id === user.id) {
+          r.users.delete(user.id);
+          hasDeleted = true;
         }
       });
     });
-    return false;
+    return hasDeleted;
   }
 
   emitRoomUsersToAll(io: SocketIO.Server): void {
@@ -120,7 +121,7 @@ export default class RoomManager {
     return true;
   }
 
-  deleteOldRooms(io: SocketIO.Server): void {
+  deleteOldRooms(): void {
     try {
       const namesToDelete: string[] = [];
       this.allRooms.forEach(r => {
