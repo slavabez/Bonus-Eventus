@@ -80,10 +80,12 @@ describe("Server-client integration tests", () => {
       }
     };
 
+    // When room list is received - call this function
     clients.forEach(c => {
       c.on("room.list", receivedEmit);
     });
 
+    // Send the broadcast to all users
     rm.broadcastRoomList(server.io);
   });
 });

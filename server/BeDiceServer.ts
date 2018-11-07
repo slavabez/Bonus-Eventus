@@ -11,6 +11,7 @@ import errorMiddleware from "./handlers/errorMiddleware";
 // Event handlers
 import { handlePing } from "./handlers/connection";
 import UserManager, {User} from "./helpers/UserManager";
+import RoomManager from "./helpers/RoomManager";
 
 class BeDiceServer {
   private readonly app: express.Application;
@@ -19,6 +20,7 @@ class BeDiceServer {
 
   public address?: string | AddressInfo;
   public um: UserManager;
+  public rm: RoomManager;
 
   constructor() {
     this.app = express();
@@ -26,6 +28,7 @@ class BeDiceServer {
     this.io = socketIO(this.server);
     this.setupExpress();
     this.um = new UserManager();
+    this.rm = new RoomManager();
   }
 
   listen(port?: number): void {
@@ -83,6 +86,12 @@ class BeDiceServer {
     // Registration stuff
     socket.on("register.new", this.um.handleNewUserRegistration(socket));
     socket.on("register.restore", this.um.handleRestoreUser(socket));
+
+    // Rooms - creating, joining, listing
+    socket.on("room.create", this.rm.handleRoomCreate(socket));
+    socket.on("room.list", this.rm.handleRoomList(socket));
+    socket.on("room.join", this.rm.handleRoomJoin(socket, this.um));
+    socket.on("room.leave", this.rm.handleRoomLeave(socket, this.um));
   }
 }
 

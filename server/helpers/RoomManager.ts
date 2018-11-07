@@ -1,4 +1,4 @@
-import { User } from "./UserManager";
+import UserManager, { User } from "./UserManager";
 import * as SocketIO from "socket.io";
 
 interface singleRoll {
@@ -61,7 +61,7 @@ export default class RoomManager {
   getRoomList(): Room[] {
     const list = Array.from(this.allRooms.values());
     list.forEach(li => {
-      li.numOfUsers = li.users.size
+      li.numOfUsers = li.users.size;
     });
     return list;
   }
@@ -123,7 +123,7 @@ export default class RoomManager {
     if (!this.allRooms.has(roomName)) return false;
     const room = this.allRooms.get(roomName);
     // 20 messages allowed in history max, delete if more
-    if (room!.history.length > 19){
+    if (room!.history.length > 19) {
       room!.history = room!.history.slice(room!.history.length - 19);
     }
     room!.history.push(roll);
@@ -150,12 +150,82 @@ export default class RoomManager {
           if (lastMessageIsOld) namesToDelete.push(r.name);
         }
       });
-      console.log(`Flagged ${namesToDelete.length} rooms for deletion.`);
+      // console.log(`Flagged ${namesToDelete.length} rooms for deletion.`);
       namesToDelete.forEach(n => {
         if (this.allRooms.has(n)) this.allRooms.delete(n);
       });
     } catch (e) {
       console.error(`Failed to clean up old rooms`, e);
     }
+  }
+
+  handleRoomCreate(socket: SocketIO.Socket) {
+    const rm = this;
+    try {
+      return function(data: any) {
+        // Data should be string with new name
+        const room = rm.createNewRoom(data);
+        // Send the new room to the client, broadcast new room list to other clients
+        if (room) socket.emit("room.created", room);
+        socket.broadcast.emit("room.list", rm.getRoomList());
+      };
+    } catch (e) {
+      return function() {
+        socket.emit("error.client", `Failed to create a new room`);
+      };
+    }
+  }
+
+  handleRoomList(socket: SocketIO.Socket) {
+    const rm = this;
+    return function() {
+      socket.emit("room.list", rm.getRoomList());
+    };
+  }
+
+  handleRoomJoin(socket: SocketIO.Socket, um: UserManager) {
+    const rm = this;
+    return function(roomName: any) {
+      // See if such room exists
+      if (!rm.allRooms.has(roomName)) {
+        socket.emit("error.client", "Room does not exist");
+        socket.emit("room.list", rm.getRoomList());
+        return;
+      }
+
+      const user = um.findUserBySocketId(socket.id);
+      if (!user) {
+        socket.emit("error.client", "Error adding user to the room");
+        return;
+      }
+      rm.addUserToRoom(user, roomName);
+      socket.join(roomName);
+
+      // Broadcast to the room that a user joined
+      socket.broadcast.to(roomName).emit("room.joined", user);
+    };
+  }
+
+  handleRoomLeave(socket: SocketIO.Socket, um: UserManager) {
+    const rm = this;
+    return function(roomName: any) {
+      // See if such room exists
+      if (!rm.allRooms.has(roomName)) {
+        socket.emit("error.client", "Error leaving the room");
+        socket.emit("room.list", rm.getRoomList());
+        return;
+      }
+
+      const user = um.findUserBySocketId(socket.id);
+      if (!user) {
+        socket.emit("error.client", "Error adding user to the room");
+        return;
+      }
+      rm.removeUserFromRoom(user, roomName);
+      socket.leave(roomName);
+
+      // Broadcast to the room that a user joined
+      socket.broadcast.to(roomName).emit("room.left", user);
+    };
   }
 }

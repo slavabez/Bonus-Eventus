@@ -7,7 +7,7 @@
     "dev:server": "nodemon",
     "server:debug": "node --inspect=5858 -r ts-node/register server/index.ts",
     "test:server": "jest --verbose",
-    "test:server:watch": "jest --watchAll --verbose --env=node",
+    "test:server:watch": "jest --watchAll --env=node",
     "test:server:coverage": "jest --ci --reporters=default --runInBand --reporters=jest-junit",
     "test:client": "cd client && yarn run test",
     "test": "yarn run test:server && yarn run test:client",
