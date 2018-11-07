@@ -1,9 +1,11 @@
 import "jest";
+import BeDiceServer from "../BeDiceServer";
+import * as ioClient from "socket.io-client";
 import RoomManager, {Room} from "./RoomManager";
 import FakeGenerator from "./FakeGenerator";
 import {User} from "./UserManager";
 
-describe("RoomManager", () => {
+describe("RoomManager Unit tests", () => {
   test("Creating new room works", () => {
     const rm = new RoomManager();
     const room = rm.createNewRoom("Test Room");
@@ -108,3 +110,5 @@ describe("RoomManager", () => {
 
   });
 });
+
+

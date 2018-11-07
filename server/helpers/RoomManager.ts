@@ -1,5 +1,6 @@
-import { User } from "./UserManager";
+import UserManager, { User } from "./UserManager";
 import * as SocketIO from "socket.io";
+import * as roll from "yadicer";
 
 interface singleRoll {
   order?: number;
@@ -13,19 +14,26 @@ interface rollAuthor {
   color: string;
 }
 
+interface rollMessageProps {
+  author: rollAuthor;
+  rollString: string;
+  total?: number;
+  rolls?: singleRoll[];
+}
+
 export class RollMessage {
   public author: rollAuthor;
   public rollString: string;
-  public total: number;
-  public rolls: singleRoll[];
+  public total?: number;
+  public rolls?: singleRoll[];
   public createdAt: Date;
 
-  constructor(props: any) {
+  constructor(props: rollMessageProps) {
     this.author = props!.author;
-    this.rollString = props!.author;
-    this.total = props!.author;
-    this.rolls = props!.author;
-    this.createdAt = props!.author;
+    this.rollString = props!.rollString;
+    this.total = props!.total;
+    this.rolls = props!.rolls;
+    this.createdAt = new Date();
   }
 }
 
@@ -34,6 +42,7 @@ export class Room {
   public users: Map<string, User>;
   public history: RollMessage[];
   public createdAt: Date;
+  public numOfUsers?: number;
 
   constructor(name: string) {
     this.name = name;
@@ -55,6 +64,14 @@ export default class RoomManager {
     const room = new Room(name);
     this.allRooms.set(room.name, room);
     return room;
+  }
+
+  getRoomList(): Room[] {
+    const list = Array.from(this.allRooms.values());
+    list.forEach(li => {
+      li.numOfUsers = li.users.size;
+    });
+    return list;
   }
 
   addUserToRoom(user: User, roomName: string): boolean {
@@ -107,14 +124,14 @@ export default class RoomManager {
    * @param io
    */
   broadcastRoomList(io: SocketIO.Server): void {
-    io.emit("room.list", Array.from(this.allRooms.values()));
+    io.emit("room.list", this.getRoomList());
   }
 
   postRollToRoom(roll: RollMessage, roomName: string): boolean {
     if (!this.allRooms.has(roomName)) return false;
     const room = this.allRooms.get(roomName);
     // 20 messages allowed in history max, delete if more
-    if (room!.history.length > 19){
+    if (room!.history.length > 19) {
       room!.history = room!.history.slice(room!.history.length - 19);
     }
     room!.history.push(roll);
@@ -141,12 +158,124 @@ export default class RoomManager {
           if (lastMessageIsOld) namesToDelete.push(r.name);
         }
       });
-      console.log(`Flagged ${namesToDelete.length} rooms for deletion.`);
+      // console.log(`Flagged ${namesToDelete.length} rooms for deletion.`);
       namesToDelete.forEach(n => {
         if (this.allRooms.has(n)) this.allRooms.delete(n);
       });
     } catch (e) {
       console.error(`Failed to clean up old rooms`, e);
     }
+  }
+
+  handleRoomCreate(socket: SocketIO.Socket) {
+    const rm = this;
+    try {
+      return function(data: any) {
+        // Data should be string with new name
+        const room = rm.createNewRoom(data);
+        // Send the new room to the client, broadcast new room list to other clients
+        if (room) socket.emit("room.created", room);
+        socket.broadcast.emit("room.list", rm.getRoomList());
+      };
+    } catch (e) {
+      return function() {
+        socket.emit("error.client", `Failed to create a new room`);
+      };
+    }
+  }
+
+  handleRoomList(socket: SocketIO.Socket) {
+    const rm = this;
+    return function() {
+      socket.emit("room.list", rm.getRoomList());
+    };
+  }
+
+  handleRoomJoin(socket: SocketIO.Socket, um: UserManager) {
+    const rm = this;
+    return function(roomName: any) {
+      // See if such room exists
+      if (!rm.allRooms.has(roomName)) {
+        socket.emit("error.client", "Room does not exist");
+        socket.emit("room.list", rm.getRoomList());
+        return;
+      }
+
+      const user = um.findUserBySocketId(socket.id);
+      if (!user) {
+        socket.emit("error.client", "Error adding user to the room");
+        return;
+      }
+      rm.addUserToRoom(user, roomName);
+      socket.join(roomName);
+
+      // Broadcast to the room that a user joined
+      socket.broadcast.to(roomName).emit("room.joined", user);
+    };
+  }
+
+  handleRoomLeave(socket: SocketIO.Socket, um: UserManager) {
+    const rm = this;
+    return function(roomName: any) {
+      // See if such room exists
+      if (!rm.allRooms.has(roomName)) {
+        socket.emit("error.client", "Error leaving the room");
+        socket.emit("room.list", rm.getRoomList());
+        return;
+      }
+
+      const user = um.findUserBySocketId(socket.id);
+      if (!user) {
+        socket.emit("error.client", "Error adding user to the room");
+        return;
+      }
+      rm.removeUserFromRoom(user, roomName);
+      socket.leave(roomName);
+
+      // Broadcast to the room that a user joined
+      socket.broadcast.to(roomName).emit("room.left", user);
+    };
+  }
+
+  handleRoll(socket: SocketIO.Socket, um: UserManager, io: SocketIO.Server) {
+    const rm = this;
+    return async function(rollData: any) {
+      try {
+        // Check the connected socket is in a room
+        const sRooms = Object.values(socket.rooms);
+        // Rooms is an object, by default every socket is automatically in it's own room with ID of user ID
+        const room = sRooms.find(r => r !== socket.id);
+        if (!room || !rm.allRooms.has(room)) {
+          socket.emit("error.client", "Error rolling the dice");
+          return;
+        }
+        // Got the room, roll using Yadicer
+        const rolls = await roll(rollData);
+        const user = um.findUserBySocketId(socket.id);
+        if (!user) {
+          socket.emit("error.client", "Error rolling the dice");
+          return;
+        }
+        // Construct the Roll Message object for the room
+        const rollMessage = new RollMessage({
+          rollString: rollData,
+          rolls: rolls.rolls,
+          total: rolls.total,
+          author: {
+            avatar: user.avatar,
+            color: user.color,
+            name: user.name
+          }
+        });
+        rm.postRollToRoom(rollMessage, room);
+        // Broadcast to all in the room a new roll just came in
+        io.to(room).emit("room.roll.new", rollMessage);
+      } catch (e) {
+        socket.emit(
+          "error.client",
+          "Error rolling the di(c)e, please try again"
+        );
+      }
+    };
   }
 }
