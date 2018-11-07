@@ -92,6 +92,9 @@ class BeDiceServer {
     socket.on("room.list", this.rm.handleRoomList(socket));
     socket.on("room.join", this.rm.handleRoomJoin(socket, this.um));
     socket.on("room.leave", this.rm.handleRoomLeave(socket, this.um));
+
+    // Roll - handle
+    socket.on("room.roll", this.rm.handleRoll(socket, this.um, this.io));
   }
 }
 

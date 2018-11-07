@@ -1,5 +1,6 @@
 import UserManager, { User } from "./UserManager";
 import * as SocketIO from "socket.io";
+import * as roll from "yadicer";
 
 interface singleRoll {
   order?: number;
@@ -13,19 +14,26 @@ interface rollAuthor {
   color: string;
 }
 
+interface rollMessageProps {
+  author: rollAuthor;
+  rollString: string;
+  total?: number;
+  rolls?: singleRoll[];
+}
+
 export class RollMessage {
   public author: rollAuthor;
   public rollString: string;
-  public total: number;
-  public rolls: singleRoll[];
+  public total?: number;
+  public rolls?: singleRoll[];
   public createdAt: Date;
 
-  constructor(props: any) {
+  constructor(props: rollMessageProps) {
     this.author = props!.author;
-    this.rollString = props!.author;
-    this.total = props!.author;
-    this.rolls = props!.author;
-    this.createdAt = props!.author;
+    this.rollString = props!.rollString;
+    this.total = props!.total;
+    this.rolls = props!.rolls;
+    this.createdAt = new Date();
   }
 }
 
@@ -226,6 +234,48 @@ export default class RoomManager {
 
       // Broadcast to the room that a user joined
       socket.broadcast.to(roomName).emit("room.left", user);
+    };
+  }
+
+  handleRoll(socket: SocketIO.Socket, um: UserManager, io: SocketIO.Server) {
+    const rm = this;
+    return async function(rollData: any) {
+      try {
+        // Check the connected socket is in a room
+        const sRooms = Object.values(socket.rooms);
+        // Rooms is an object, by default every socket is automatically in it's own room with ID of user ID
+        const room = sRooms.find(r => r !== socket.id);
+        if (!room || !rm.allRooms.has(room)) {
+          socket.emit("error.client", "Error rolling the dice");
+          return;
+        }
+        // Got the room, roll using Yadicer
+        const rolls = await roll(rollData);
+        const user = um.findUserBySocketId(socket.id);
+        if (!user) {
+          socket.emit("error.client", "Error rolling the dice");
+          return;
+        }
+        // Construct the Roll Message object for the room
+        const rollMessage = new RollMessage({
+          rollString: rollData,
+          rolls: rolls.rolls,
+          total: rolls.total,
+          author: {
+            avatar: user.avatar,
+            color: user.color,
+            name: user.name
+          }
+        });
+        rm.postRollToRoom(rollMessage, room);
+        // Broadcast to all in the room a new roll just came in
+        io.to(room).emit("room.roll.new", rollMessage);
+      } catch (e) {
+        socket.emit(
+          "error.client",
+          "Error rolling the di(c)e, please try again"
+        );
+      }
     };
   }
 }
