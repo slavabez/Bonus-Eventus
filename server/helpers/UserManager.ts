@@ -1,6 +1,7 @@
 import * as uniqid from "uniqid";
 import * as socketIO from "socket.io";
 import SessionManager from "./SessionManager";
+import RoomManager from "./RoomManager";
 
 export interface UserProps {
   avatar: string;
@@ -115,13 +116,20 @@ export default class UserManager {
     };
   }
 
-  handleClientDisconnect(socket: socketIO.Socket) {
-    return async () => {
-      // Client has disconnected, remove from users
-      const user = this.findUserBySocketId(socket.id);
-      if (user && this.allUsers.has(user.id)) {
-        this.allUsers.delete(user.id);
-      }
+  handleClientDisconnect(socket: socketIO.Socket, rm: RoomManager) {
+    const um = this;
+    return () => {
+      // Disconnected, handle
+      // If socket has an associated user, remove them from groups
+      const user = um.findUserBySocketId(socket.id);
+      // No user - do nothing
+      if (!user) return;
+      // Find the room socket is in
+      const room = RoomManager.getSocketRoom(socket);
+      // Use wasn't in a room, don't need to do anything
+      if (!room) return;
+      rm.removeUserFromRoom(user, room);
+      socket.to(room).broadcast.emit("room.leave");
     };
   }
 }

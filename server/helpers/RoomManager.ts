@@ -111,6 +111,16 @@ export default class RoomManager {
     return hasDeleted;
   }
 
+  /**
+   * Find the room the socket is in. Caution, gets the first room that isn't the same as the ID of the socket
+   * @param socket
+   */
+  public static getSocketRoom(socket: SocketIO.Socket) {
+    const sRooms = Object.values(socket.rooms);
+    // Rooms is an object, by default every socket is automatically in it's own room with ID of user ID
+    return sRooms.find(r => r !== socket.id);
+  }
+
   emitRoomUsersToAll(io: SocketIO.Server): void {
     this.allRooms.forEach(r => {
       // Get users as array, emit to that room
@@ -241,10 +251,7 @@ export default class RoomManager {
     const rm = this;
     return async function(rollData: any) {
       try {
-        // Check the connected socket is in a room
-        const sRooms = Object.values(socket.rooms);
-        // Rooms is an object, by default every socket is automatically in it's own room with ID of user ID
-        const room = sRooms.find(r => r !== socket.id);
+        const room = RoomManager.getSocketRoom(socket);
         if (!room || !rm.allRooms.has(room)) {
           socket.emit("error.client", "Error rolling the dice");
           return;
