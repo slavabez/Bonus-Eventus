@@ -121,13 +121,13 @@ export default class RoomManager {
     return sRooms.find(r => r !== socket.id);
   }
 
-  emitRoomUsersToAll(io: SocketIO.Server): void {
+/*  emitRoomUsersToAll(io: SocketIO.Server): void {
     this.allRooms.forEach(r => {
       // Get users as array, emit to that room
       const users = Array.from(r.users.values());
       if (users.length > 0) io.in(r.name).emit("room.players", users);
     });
-  }
+  }*/
 
   /**
    * Broadcasts a list of all rooms as an array

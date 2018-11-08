@@ -109,9 +109,10 @@ export default class UserManager {
           // New - add to list
           this.allUsers.set(user.id, user);
         }
+        socket.emit("register.restore.success", user);
       } catch (e) {
         // Failed, prompt user to remove the cookie and create a new character
-        socket.emit("registration.restore.failure");
+        socket.emit("register.restore.failure");
       }
     };
   }
