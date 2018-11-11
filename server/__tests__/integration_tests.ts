@@ -155,9 +155,23 @@ describe("Simple use flow tests with single client", () => {
     client.emit("register.new", userProps);
   });
 
-  test.skip("register user -> create & enter room -> leave room works", () => {
+  test("register user -> create & enter room -> leave room works", done => {
+    expect.assertions(1);
     const userProps = { name: "Tester", avatar: "yikes.png", color: "red" };
     const roomName = "A New Room";
+
+    client.on("room.leave.success", () => {
+      done();
+    });
+
+    client.on("room.join.success", () => {
+      client.emit("room.leave", roomName);
+    });
+
+    client.on("room.created", (room: any) => {
+      expect(room.name).toBe(roomName);
+      client.emit("room.join", roomName);
+    });
 
     client.on("register.new.success", () => {
       // Success, create and join a room

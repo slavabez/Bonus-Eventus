@@ -221,6 +221,7 @@ export default class RoomManager {
 
       // Broadcast to the room that a user joined
       socket.broadcast.to(roomName).emit("room.joined", user);
+      socket.emit("room.join.success");
     };
   }
 
@@ -244,6 +245,7 @@ export default class RoomManager {
 
       // Broadcast to the room that a user joined
       socket.broadcast.to(roomName).emit("room.left", user);
+      socket.emit("room.leave.success");
     };
   }
 
