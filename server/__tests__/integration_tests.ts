@@ -1,7 +1,7 @@
 import "jest";
 import BeDiceServer from "../BeDiceServer";
 import * as ioClient from "socket.io-client";
-import RoomManager, { Room } from "../helpers/RoomManager";
+import RoomManager, {RollMessage, Room} from "../helpers/RoomManager";
 import FakeGenerator from "../helpers/FakeGenerator";
 
 describe("Server-client integration tests", () => {
@@ -116,6 +116,8 @@ describe("Simple use flow tests with single client", () => {
     if (client.connected) {
       client.disconnect();
     }
+    // Also remove all rooms to avoid test conflicts
+    server.rm.allRooms.clear();
     done();
   });
 
@@ -148,7 +150,11 @@ describe("Simple use flow tests with single client", () => {
     });
 
     client.on("register.restore.failure", () => {
-      done.fail(new Error("Expected register.restore.success but received registration.restore.failure"));
+      done.fail(
+        new Error(
+          "Expected register.restore.success but received registration.restore.failure"
+        )
+      );
     });
 
     // Set everything in motion
@@ -156,15 +162,27 @@ describe("Simple use flow tests with single client", () => {
   });
 
   test("register user -> create & enter room -> leave room works", done => {
-    expect.assertions(1);
+    expect.assertions(4);
     const userProps = { name: "Tester", avatar: "yikes.png", color: "red" };
     const roomName = "A New Room";
 
+    client.on("error.client", (error: any) => {
+      console.error(error);
+      done.fail(`Received client.error event, something went wrong`);
+    });
+
     client.on("room.leave.success", () => {
+      // Verify on the server that room is empty
+      const room = server.rm.allRooms.get(roomName);
+      expect(room!.users.size).toBe(0);
       done();
     });
 
     client.on("room.join.success", () => {
+      // Check on the server the room now has 1 user
+      const room = server.rm.allRooms.get(roomName);
+      expect(room!.name).toBe(roomName);
+      expect(room!.users.size).toBe(1);
       client.emit("room.leave", roomName);
     });
 
@@ -180,7 +198,65 @@ describe("Simple use flow tests with single client", () => {
 
     client.emit("register.new", userProps);
   });
-  test.skip("register user -> create & enter room -> roll a few dice -> leave room works", () => {});
-  test.skip("register user -> create & enter room -> leave room -> create & join another room works", () => {});
 
+  test("register user -> create & enter room -> roll a die -> leave room works", done => {
+    // expect.assertions(4);
+    const userProps = { name: "Tester", avatar: "yikes.png", color: "#ff3454" };
+    const roomName = "A New Room";
+    const rollString = "2d20";
+
+    client.on("error.client", (error: any) => {
+      console.error(error);
+      done.fail(`Received client.error event, something went wrong`);
+    });
+    // Number indicates the order of execution
+
+    client.on("room.leave.success", () => {
+      // Verify on the server that room is empty
+      const room = server.rm.allRooms.get(roomName);
+      expect(room!.users.size).toBe(0);
+      done();
+    });
+
+    // 5
+    client.on("room.roll.new", (rollMessage: RollMessage) => {
+      // Make sure the roll assigned the right author
+      expect(rollMessage.author).toEqual(userProps);
+      // Roll string (2d20)
+      expect(rollMessage.rollString).toBe(rollString);
+      // Roll Total should be between 2 and 40, since we rolled 2d20
+      expect(rollMessage.total).toBeGreaterThanOrEqual(2);
+      expect(rollMessage.total).toBeLessThanOrEqual(40);
+      // Roll Message should have 2 rolls
+      expect(rollMessage.rolls!.length).toBe(2);
+
+      client.emit("room.leave", roomName);
+    });
+
+    // 4
+    client.on("room.join.success", () => {
+      // Check on the server the room now has 1 user
+      const room = server.rm.allRooms.get(roomName);
+      expect(room!.name).toBe(roomName);
+      expect(room!.users.size).toBe(1);
+
+      client.emit("room.roll", rollString);
+    });
+
+    // 3
+    client.on("room.created", (room: any) => {
+      expect(room.name).toBe(roomName);
+      client.emit("room.join", roomName);
+    });
+
+    // 2
+    client.on("register.new.success", () => {
+      // Success, create and join a room
+      client.emit("room.create", roomName);
+    });
+
+    // 1
+    client.emit("register.new", userProps);
+  });
+  test.skip("register user -> create & enter room -> leave room -> create & join another room works", () => {});
 });
