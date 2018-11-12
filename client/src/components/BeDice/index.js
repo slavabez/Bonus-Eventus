@@ -1,20 +1,21 @@
 import React, { Component } from "react";
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
-import Header from "./Header";
-import Landing from "./Landing";
-import Registration from "./Registration";
-import RoomSelection from "./RoomSelection";
-import RoomView from "./RoomView";
+import Header from "../Header";
+import Landing from "../Landing";
+import Registration from "../Registration";
+import RoomSelection from "../RoomSelection";
+import RoomView from "../RoomView";
+import { AppWrapper, MainView } from "./styled";
 
 const someName = "  Looolll   ";
 
 class BeDice extends Component {
   render() {
     return (
-      <div>
+      <AppWrapper>
         <Header />
         <Router>
-          <div>
+          <MainView>
             <ul>
               <li>
                 <Link to="/">Landing</Link>
@@ -33,9 +34,9 @@ class BeDice extends Component {
             <Route path="/profile" component={Registration} />
             <Route path="/rooms" exact component={RoomSelection} />
             <Route path="/rooms/:roomName" component={RoomView} />
-          </div>
+          </MainView>
         </Router>
-      </div>
+      </AppWrapper>
     );
   }
 }
