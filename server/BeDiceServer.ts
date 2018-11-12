@@ -10,7 +10,7 @@ import errorMiddleware from "./handlers/errorMiddleware";
 
 // Event handlers
 import { handlePing } from "./handlers/connection";
-import UserManager, {User} from "./helpers/UserManager";
+import UserManager from "./helpers/UserManager";
 import RoomManager from "./helpers/RoomManager";
 
 class BeDiceServer {
@@ -37,12 +37,10 @@ class BeDiceServer {
     });
     this.address = this.server.address();
     this.io.on("connection", (socket: socketIO.Socket) => {
-      // New user connected, handle
+      // New user connected, attach socket event listeners
       this.addEventListeners(socket);
 
-      socket.on("disconnect", () => {
-        // Disconnected, handle
-      });
+      socket.on("disconnect", this.um.handleClientDisconnect(socket, this.rm));
     });
   }
 
