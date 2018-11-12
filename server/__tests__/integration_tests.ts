@@ -258,5 +258,4 @@ describe("Simple use flow tests with single client", () => {
     // 1
     client.emit("register.new", userProps);
   });
-  test.skip("register user -> create & enter room -> leave room -> create & join another room works", () => {});
 });
