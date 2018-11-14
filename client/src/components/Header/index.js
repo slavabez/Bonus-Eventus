@@ -17,14 +17,11 @@ const Wrapper = styled.header`
   width: 100%;
   display: grid;
   justify-items: center;
-  grid-template-columns: 1fr repeat(1, auto) 1fr;
+  grid-template-columns: 1fr 2fr;
   grid-column-gap: 5px;
 
-  li:nth-child(1) {
-    grid-column-start: 2;
-  }
-  li:nth-child(2) {
-    margin-left: auto;
+  @media (min-width: 768px) {
+    grid-template-columns: 2fr 1fr 2fr;
   }
 
   img {
@@ -37,6 +34,7 @@ class Header extends Component {
   render() {
     return (
       <Wrapper>
+        <Spacer />
         <img src={logo} alt="BE Dice Logo (Bonus Eventus)" />
         <ProfileControls />
       </Wrapper>
