@@ -15,12 +15,21 @@ const Spacer = styled.div`
 
 const Wrapper = styled.header`
   width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+  display: grid;
+  justify-items: center;
+  grid-template-columns: 1fr repeat(1, auto) 1fr;
+  grid-column-gap: 5px;
+
+  li:nth-child(1) {
+    grid-column-start: 2;
+  }
+  li:nth-child(2) {
+    margin-left: auto;
+  }
 
   img {
     max-height: 100px;
+    justify-self: center;
   }
 `;
 
@@ -28,7 +37,6 @@ class Header extends Component {
   render() {
     return (
       <Wrapper>
-        <Spacer />
         <img src={logo} alt="BE Dice Logo (Bonus Eventus)" />
         <ProfileControls />
       </Wrapper>
