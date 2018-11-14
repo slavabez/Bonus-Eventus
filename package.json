@@ -64,8 +64,7 @@
       "json"
     ],
     "reporters": [
-      "default",
-      "jest-junit"
+      "default"
     ],
     "globals": {
       "ts-jest": {
