@@ -1,5 +1,7 @@
 import React, { Component } from "react";
 import styled from "styled-components";
+import { view } from "react-easy-state";
+import characterStore from "../../stores/character";
 
 const Wrapper = styled.div`
   width: 100%;
@@ -21,10 +23,10 @@ class ProfileControls extends Component {
     return (
       <Wrapper>
         <button>Exit room</button>
-        <button>Profile</button>
+        <button>{characterStore.currentUser.name}</button>
       </Wrapper>
     );
   }
 }
 
-export default ProfileControls;
+export default view(ProfileControls);

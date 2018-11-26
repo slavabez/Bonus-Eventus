@@ -4,6 +4,7 @@ import { avatars, profileColors } from "../shared";
 import Avatar from "./Avatar";
 import Color from "./Color";
 import CharacterPreview from "./CharacterPreview";
+import characterStore from "../../stores/character";
 
 const Wrapper = styled.form`
   width: 100%;
@@ -48,6 +49,11 @@ class CharacterCreation extends Component {
 
   handleCharacterSubmit = e => {
     e.preventDefault();
+    characterStore.register({
+      avatar: this.state.selectedAvatar,
+      name: this.state.selectedName,
+      color: this.state.selectedColor
+    });
   };
 
   renderAvatars() {
@@ -65,7 +71,7 @@ class CharacterCreation extends Component {
   render() {
     const { selectedAvatar, selectedName, selectedColor } = this.state;
     return (
-      <Wrapper oNSubmit={this.handleCharacterSubmit}>
+      <Wrapper onSubmit={this.handleCharacterSubmit}>
         <CharacterPreview
           avatar={selectedAvatar}
           color={selectedColor}
