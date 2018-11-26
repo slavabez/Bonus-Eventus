@@ -7,15 +7,22 @@ const ColorCircle = styled.div`
   height: 25px;
   border-radius: 50%;
   background-color: ${props => props.color};
-  margin: 0 0.5rem;
 `;
 
 const Color = props => {
-  return <ColorCircle color={props.color} />;
+  return (
+    <ColorCircle
+      color={props.color}
+      onClick={() => {
+        props.handleSelect(props.color);
+      }}
+    />
+  );
 };
 
 Color.propTypes = {
-  color: PropTypes.string
+  color: PropTypes.string,
+  handleSelect: PropTypes.func
 };
 
 export default Color;

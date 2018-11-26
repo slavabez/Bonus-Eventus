@@ -19,14 +19,20 @@ const Wrapper = styled.header`
   justify-items: center;
   grid-template-columns: 1fr 2fr;
   grid-column-gap: 5px;
+  align-items: center;
+
+  img {
+    max-height: 75px;
+    justify-self: center;
+  }
 
   @media (min-width: 768px) {
     grid-template-columns: 2fr 1fr 2fr;
-  }
 
-  img {
-    max-height: 100px;
-    justify-self: center;
+    img {
+      max-height: 100px;
+      justify-self: center;
+    }
   }
 `;
 

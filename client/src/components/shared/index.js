@@ -48,6 +48,7 @@ export const LargeTitle = styled.h1`
 
 export const LargeText = styled.p`
   font-size: 2rem;
+  margin: 0;
 `;
 
 export const LargeButtonLink = styled(Link)`
