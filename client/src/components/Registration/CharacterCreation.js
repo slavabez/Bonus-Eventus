@@ -5,8 +5,18 @@ import Avatar from "./Avatar";
 import Color from "./Color";
 
 const Wrapper = styled.div``;
-const Avatars = styled.div``;
-const Colors = styled.div``;
+const Avatars = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+`;
+const Colors = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+`;
 
 class CharacterCreation extends Component {
   renderAvatars() {
@@ -14,7 +24,7 @@ class CharacterCreation extends Component {
   }
 
   renderColors() {
-    return avatars.map(c => <Color color={c} key={c} />);
+    return profileColors.map(c => <Color color={c} key={c} />);
   }
 
   render() {

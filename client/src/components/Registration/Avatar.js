@@ -1,9 +1,15 @@
 import React from 'react';
 import PropTypes from "prop-types";
+import styled from "styled-components";
+
+const Image = styled.img`
+  max-width: 4rem;
+  margin: 0 1rem;
+`;
 
 const Avatar = (props) => {
   return (
-    <img src={props.src}  />
+    <Image src={props.src}  />
   );
 };
 Avatar.propTypes = {
