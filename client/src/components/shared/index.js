@@ -36,6 +36,8 @@ export const CenteredFlex = styled.div`
 `;
 
 export const TextContent = styled.div`
+  display: flex;
+  flex-direction: column;
   max-width: 900px;
   text-align: center;
   padding: 0 1rem;
@@ -61,8 +63,6 @@ export const LargeButtonLink = styled(Link)`
   font-family: Dosis, sans-serif;
   font-size: 1.5rem;
   text-align: center;
-  margin-bottom: 2rem;
-  margin-top: 2rem;
   padding: 0.5rem 2rem;
   border-radius: 2rem;
   border-image: initial;

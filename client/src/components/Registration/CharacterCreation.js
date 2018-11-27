@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import styled from "styled-components";
-import { avatars, profileColors } from "../shared";
+import { avatars, profileColors, beGreen } from "../shared";
 import Avatar from "./Avatar";
 import Color from "./Color";
 import CharacterPreview from "./CharacterPreview";
@@ -22,6 +22,21 @@ const Colors = styled.div`
   justify-content: space-around;
   align-items: center;
   flex-wrap: wrap;
+`;
+
+const NameInput = styled.input`
+  margin-top: 1rem;
+  width: 80%;
+  padding: 0.5rem;
+  border: none;
+  border-bottom: 1px solid ${props => props.color || "grey"};
+  text-align: center;
+  font-size: 1.5rem;
+
+  :focus {
+    outline: none;
+    box-shadow: 0.2rem 0.8rem 1.6rem ${props => props.color || "grey"};
+  }
 `;
 
 class CharacterCreation extends Component {
@@ -80,10 +95,13 @@ class CharacterCreation extends Component {
         <Avatars>{this.renderAvatars()}</Avatars>
         <br />
         <Colors>{this.renderColors()}</Colors>
-        <input
+        <NameInput
           type="text"
           onChange={this.handleNameChange}
           value={this.state.selectedName}
+          maxLength="12"
+          minLength="3"
+          color={this.state.selectedColor}
         />
       </Wrapper>
     );

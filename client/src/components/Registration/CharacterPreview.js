@@ -4,12 +4,13 @@ import styled from "styled-components";
 import { beGreen } from "../shared";
 
 const Wrapper = styled.div`
-  border: 2px solid ${beGreen};
-  margin: 1rem;
+  border: 4px solid ${props => props.color || "transparent"};
+  margin: 0.5rem;
   padding: 1rem;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: space-around;
+  border-radius: 1.5rem;
 `;
 
 const AvatarImage = styled.img`
@@ -18,13 +19,14 @@ const AvatarImage = styled.img`
 `;
 
 const Title = styled.span`
+  width: 100%;
   font-size: 1.5rem;
   color: ${props => props.color || "black"};
 `;
 
 const CharacterPreview = props => {
   return (
-    <Wrapper>
+    <Wrapper color={props.color}>
       <AvatarImage src={props.avatar} color={props.color} />
       <Title color={props.color}>{props.name}</Title>
     </Wrapper>
