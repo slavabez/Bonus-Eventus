@@ -15,6 +15,7 @@ const Avatars = styled.div`
   justify-content: space-around;
   align-items: center;
   flex-wrap: wrap;
+  margin-top: 1rem;
 `;
 
 const Colors = styled.div`
@@ -22,6 +23,7 @@ const Colors = styled.div`
   justify-content: space-around;
   align-items: center;
   flex-wrap: wrap;
+  margin-top: 1rem;
 `;
 
 const NameInput = styled.input`
@@ -35,8 +37,18 @@ const NameInput = styled.input`
 
   :focus {
     outline: none;
-    box-shadow: 0.2rem 0.8rem 1.6rem ${props => props.color || "grey"};
+    border-bottom: 4px solid ${props => props.color || "grey"};
   }
+`;
+
+const Submit = styled.button`
+  background-color: ${props => props.color || "grey"};
+  padding: 0.5rem 1rem;
+  font-size: 1.2rem;
+  color: white;
+  border: none;
+  border-radius: 0.5rem;
+  margin-top: 1rem;
 `;
 
 class CharacterCreation extends Component {
@@ -93,7 +105,6 @@ class CharacterCreation extends Component {
           name={selectedName}
         />
         <Avatars>{this.renderAvatars()}</Avatars>
-        <br />
         <Colors>{this.renderColors()}</Colors>
         <NameInput
           type="text"
@@ -101,8 +112,12 @@ class CharacterCreation extends Component {
           value={this.state.selectedName}
           maxLength="12"
           minLength="3"
+          required
           color={this.state.selectedColor}
         />
+        <Submit type="submit" color={this.state.selectedColor}>
+          Join a room
+        </Submit>
       </Wrapper>
     );
   }

@@ -4,7 +4,6 @@ import { view } from "react-easy-state";
 import characterStore from "../../stores/character";
 import Door from "../shared/DoorSvg";
 
-
 const Wrapper = styled.div`
   width: 100%;
   display: flex;
@@ -30,10 +29,13 @@ const SmallAvatar = styled.img`
 
 class ProfileControls extends Component {
   render() {
+    if (!characterStore.currentUser.id) return null;
+    const { avatar, color } = characterStore.currentUser;
+
     return (
       <Wrapper>
         <Door />
-        <SmallAvatar src="/images/paladin_100.png" color="#FF5364"/>
+        <SmallAvatar src={avatar} color={color} />
       </Wrapper>
     );
   }
