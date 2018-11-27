@@ -43,12 +43,15 @@ export const TextContent = styled.div`
 `;
 
 export const LargeTitle = styled.h1`
-  font-size: 3rem;
+  font-size: 2rem;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
 `;
 
 export const LargeText = styled.p`
-  font-size: 2rem;
-  margin: 0;
+  font-size: 1.5rem;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
 `;
 
 export const LargeButtonLink = styled(Link)`
@@ -56,10 +59,11 @@ export const LargeButtonLink = styled(Link)`
   align-self: center;
   background-color: ${beGreen};
   font-family: Dosis, sans-serif;
-  font-size: 3rem;
+  font-size: 1.5rem;
   text-align: center;
   margin-bottom: 2rem;
-  padding: 2px 50px;
+  margin-top: 2rem;
+  padding: 0.5rem 2rem;
   border-radius: 2rem;
   border-image: initial;
   text-decoration: none;

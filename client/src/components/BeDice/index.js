@@ -7,8 +7,6 @@ import RoomSelection from "../RoomSelection";
 import RoomView from "../RoomView";
 import { AppWrapper, MainView } from "./styled";
 
-const someName = "  Looolll   ";
-
 class BeDice extends Component {
   render() {
     return (
@@ -27,7 +25,7 @@ class BeDice extends Component {
                 <Link to="/rooms">Rooms</Link>
               </li>
               <li>
-                <Link to={`/rooms/${someName.trim()}`}>Sample Room</Link>
+                <Link to={`/rooms/sample}`}>Sample</Link>
               </li>
             </ul>
             <Route path="/" exact component={Landing} />

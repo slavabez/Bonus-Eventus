@@ -4,8 +4,9 @@ import styled from "styled-components";
 import { beGreen } from "../shared";
 
 const Wrapper = styled.div`
-  border-color: ${beGreen};
-  padding: 1rem 1rem 2rem;
+  border: 2px solid ${beGreen};
+  margin: 1rem;
+  padding: 1rem;
   display: flex;
   align-items: center;
   justify-content: space-around;
