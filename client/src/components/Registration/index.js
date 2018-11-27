@@ -1,11 +1,16 @@
-import React, {Component} from 'react';
+import React, { Component } from "react";
+import { CenteredFlex, LargeText, TextContent } from "../shared";
+import CharacterCreation from "./CharacterCreation";
 
 class RegistrationPage extends Component {
   render() {
     return (
-      <div>
-        I'm the Registration Page
-      </div>
+      <CenteredFlex>
+        <TextContent>
+          <LargeText>Choose how you will be seen</LargeText>
+        </TextContent>
+        <CharacterCreation />
+      </CenteredFlex>
     );
   }
 }

@@ -18,6 +18,7 @@ export const MainView = styled.div`
     padding: 0;
     display: flex;
     justify-content: center;
+    font-size: 1rem;
 
     li {
       padding: 0.5rem;

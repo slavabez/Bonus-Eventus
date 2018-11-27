@@ -93,7 +93,7 @@ export default class UserManager {
       }
       // Encrypt the session, send to user to save as cookie
       const session = await SessionManager.serialiseUser(newUser);
-      socket.emit("register.new.success", { session });
+      socket.emit("register.new.success", { session, user: newUser });
     };
   }
 
