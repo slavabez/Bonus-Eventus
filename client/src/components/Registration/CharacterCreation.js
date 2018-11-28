@@ -8,9 +8,28 @@ import characterStore from "../../stores/character";
 
 const Wrapper = styled.form`
   width: 100%;
+  display: grid;
+
+  grid-template-areas:
+    "p"
+    "a"
+    "c"
+    "n"
+    "b";
+
+  @media (min-width: 768px) {
+    grid-template-areas:
+      "p a"
+      "p c"
+      "p n"
+      "b b";
+
+    max-width: 900px;
+  }
 `;
 
 const Avatars = styled.div`
+  grid-area: a;
   display: flex;
   justify-content: space-around;
   align-items: center;
@@ -19,6 +38,7 @@ const Avatars = styled.div`
 `;
 
 const Colors = styled.div`
+  grid-area: c;
   display: flex;
   justify-content: space-around;
   align-items: center;
@@ -27,7 +47,9 @@ const Colors = styled.div`
 `;
 
 const NameInput = styled.input`
+  grid-area: n;
   margin-top: 1rem;
+  justify-self: center;
   width: 80%;
   padding: 0.5rem;
   border: none;
@@ -39,9 +61,16 @@ const NameInput = styled.input`
     outline: none;
     border-bottom: 4px solid ${props => props.color || "grey"};
   }
+
+  @media (min-width: 768px) {
+    width: 100%;
+  }
 `;
 
 const Submit = styled.button`
+  grid-area: b;
+  justify-self: center;
+  width: 80%;
   background-color: ${props => props.color || "grey"};
   padding: 0.5rem 1rem;
   font-size: 1.2rem;
@@ -49,6 +78,10 @@ const Submit = styled.button`
   border: none;
   border-radius: 0.5rem;
   margin-top: 1rem;
+
+  @media (min-width: 768px) {
+    font-size: 2rem;
+  }
 `;
 
 class CharacterCreation extends Component {
@@ -85,13 +118,23 @@ class CharacterCreation extends Component {
 
   renderAvatars() {
     return avatars.map(a => (
-      <Avatar src={a} key={a} handleSelect={this.handleAvatarChange} />
+      <Avatar
+        src={a}
+        key={a}
+        handleSelect={this.handleAvatarChange}
+        selected={a === this.state.selectedAvatar}
+      />
     ));
   }
 
   renderColors() {
     return profileColors.map(c => (
-      <Color color={c} key={c} handleSelect={this.handleColorChange} />
+      <Color
+        color={c}
+        key={c}
+        handleSelect={this.handleColorChange}
+        selected={c === this.state.selectedColor}
+      />
     ));
   }
 

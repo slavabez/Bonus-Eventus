@@ -3,10 +3,16 @@ import styled from "styled-components";
 import PropTypes from "prop-types";
 
 const ColorCircle = styled.div`
-  width: 25px;
-  height: 25px;
+  width: 22px;
+  height: 22px;
   border-radius: 50%;
   background-color: ${props => props.color};
+  border: 2px solid ${props => (props.selected ? "black" : "transparent")};
+
+  @media (min-width: 768px) {
+    width: 35px;
+    height: 35px;
+  }
 `;
 
 const Color = props => {
@@ -16,6 +22,7 @@ const Color = props => {
       onClick={() => {
         props.handleSelect(props.color);
       }}
+      selected={props.selected}
     />
   );
 };

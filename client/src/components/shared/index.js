@@ -48,12 +48,22 @@ export const LargeTitle = styled.h1`
   font-size: 2rem;
   margin-top: 0.5rem;
   margin-bottom: 0.5rem;
+  
+  @media(min-width: 768px){
+    font-size: 3rem;
+    margin: 1.5rem;
+  }
 `;
 
 export const LargeText = styled.p`
   font-size: 1.5rem;
   margin-top: 0.5rem;
   margin-bottom: 0.5rem;
+  
+  @media(min-width: 768px){
+    font-size: 2rem;
+    margin: 1.5rem 1.5rem 2rem;
+  }
 `;
 
 export const LargeButtonLink = styled(Link)`
