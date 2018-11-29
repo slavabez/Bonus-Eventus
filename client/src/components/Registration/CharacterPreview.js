@@ -4,6 +4,7 @@ import styled from "styled-components";
 import { beGreen } from "../shared";
 
 const Wrapper = styled.div`
+  grid-area: p;
   border: 4px solid ${props => props.color || "transparent"};
   margin: 0.5rem;
   padding: 1rem;
@@ -22,6 +23,10 @@ const Title = styled.span`
   width: 100%;
   font-size: 1.5rem;
   color: ${props => props.color || "black"};
+  
+  @media(min-width: 768px){
+    font-size: 2rem;
+  }
 `;
 
 const CharacterPreview = props => {

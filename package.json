@@ -16,7 +16,8 @@
     "build:server": "tsc",
     "build:client": "cd client && yarn install && yarn run build",
     "build": "yarn run build:server && yarn run build:client",
-    "start": "pm2-runtime dist/index.js"
+    "start": "pm2-runtime dist/index.js",
+    "heroku-postbuild": "yarn run build"
   },
   "repository": "git@github.com:slavabez/Bonus-Eventus.git",
   "author": "Slava Bezgachev <bezgachev@gmail.com>",
