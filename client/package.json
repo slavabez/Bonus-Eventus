@@ -29,6 +29,10 @@
     "not ie <= 11",
     "not op_mini all"
   ],
+  "engines": {
+    "node": ">=10.x",
+    "yarn": ">=1.12"
+  },
   "proxy": "http://localhost:3050",
   "devDependencies": {
     "@types/styled-components": "^4.0.3"

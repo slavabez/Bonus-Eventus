@@ -23,8 +23,8 @@
   "author": "Slava Bezgachev <bezgachev@gmail.com>",
   "license": "MIT",
   "engines": {
-    "node": "^10.x",
-    "yarn": "^1.x"
+    "node": ">=10.x",
+    "yarn": ">=1.12"
   },
   "dependencies": {
     "@types/uniqid": "^4.1.2",
