@@ -27,6 +27,6 @@ COPY . .
 # Build the production files, both server (typescript) and client (jsx)
 RUN yarn run build
 
-EXPOSE 3333
+EXPOSE 3050
 
 CMD ["pm2-runtime", "dist/index.js"]
