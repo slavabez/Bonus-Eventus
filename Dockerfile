@@ -2,6 +2,8 @@ FROM node:10-alpine
 
 WORKDIR /usr/src/app
 
+RUN yarn global add pm2
+
 # Back-end (NODE) is less likely to change, so copy and build it first
 # Copy package, lockfile to preserve versions
 COPY package.json ./
