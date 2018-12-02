@@ -1,0 +1,22 @@
+# Don't copy these into the docker image
+
+# Don't copy local node modules or any logs
+node_modules
+*.log
+
+# Settings for nodemon watcher, not of use for the docker image
+nodemon.json
+
+# Circle CI configs
+.circleci
+
+# IDE files
+.idea
+
+# Prod files compiled during dev, image will create own dist files
+dist
+
+# Heroku's config
+Procfile
+
+README.md
